@@ -6,7 +6,7 @@ import csvReaderHelper from '@/helpers/csvReader.helper';
 
 export default class CreateUsers implements Seeder {
   public async run(_: Factory, connection: Connection): Promise<any> {
-    const data = await csvReaderHelper('/users-data.csv')
+    const data = await csvReaderHelper(__dirname + '/users-data.csv')
 
     await connection
 			.createQueryBuilder()

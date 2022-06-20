@@ -1,9 +1,10 @@
-## Quick Start 
+## Quick Start
 
 `npm i `
+`npm run db:setup`
+`npm run build`
+`npm run start`
 
-`npm run start:dev`
+## Swagger
 
-## Documentation
-
-Go to [Documentation](http://localhost:3333/api/doc "Api Documentation").
+url/api/doc

@@ -6,7 +6,7 @@ import csvReaderHelper from '@/helpers/csvReader.helper';
 
 export default class CreateTournaments implements Seeder {
   public async run(_: Factory, connection: Connection): Promise<any> {
-    const data = await csvReaderHelper('/tournament-data.csv')
+    const data = await csvReaderHelper(__dirname + '/tournament-data.csv')
 
     await connection
 			.createQueryBuilder()

@@ -1,15 +1,19 @@
-// import { ITournament } from '@/interfaces/tournament.interface';
+import { ITeam } from '@/interfaces/teams.interface';
 import { Entity, PrimaryGeneratedColumn, Column, DeleteDateColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { Users } from '@models/users.model';
+import { TeamMembers } from './teamMembers.model';
 
 class ModelRelations {
   @ManyToOne(() => Users)
 	@JoinColumn({ name: 'captain_id' })
 	captain: Users
+
+  @OneToMany(() => TeamMembers, teamMember => teamMember.team)
+  members: TeamMembers[]
 }
 
 @Entity()
-export class Teams extends ModelRelations /* implements ITournament */ {
+export class Teams extends ModelRelations implements ITeam {
   @PrimaryGeneratedColumn()
   id: number;
 

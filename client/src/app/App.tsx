@@ -1,5 +1,5 @@
 import React from 'react';
-import {ManageRoutes} from "routes";
+import { ManageRoutes } from "routes";
 
 import "style/app.scss";
 

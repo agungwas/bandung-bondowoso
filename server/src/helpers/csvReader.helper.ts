@@ -2,8 +2,8 @@ import { readFile } from 'fs/promises'
 import { EOL } from 'os'
 
 
-export default async function (name: string) {
-  return await readFile(__dirname + name)
+export default async function (dir: string) {
+  return await readFile(dir)
     .then(res => res.toString())
     .then(strRes => strRes.split(EOL))
     .then(arr => {

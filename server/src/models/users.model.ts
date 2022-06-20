@@ -1,9 +1,9 @@
-// import { ITournament } from '@/interfaces/tournament.interface';
+import { IUser } from '@/interfaces/users.interface';
 import { Entity, PrimaryGeneratedColumn, Column, DeleteDateColumn } from 'typeorm';
 
 
 @Entity()
-export class Users /* implements ITournament */ {
+export class Users implements IUser {
   @PrimaryGeneratedColumn()
   id: number;
 

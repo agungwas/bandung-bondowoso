@@ -1,33 +1,33 @@
-import { CreateProductDto, DeleteProductDto, GetProductDto, UpdateProductDto } from '@dtoes/product.dto';
-import { IProduct } from '@interfaces/product.interface';
+import { CreateTournamentResultDto, DeleteTournamentResultDto, GetTournamentResultDto } from '@/dtoes/tournamentResult.dto';
+import { ITournamentResult } from '@/interfaces/tournamentResults.interface';
 import {
   Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res
 } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
-import { ProductService } from '@services/product.service';
+import { TournamentResultService } from '@services/tournamentResult.service';
 
 
-@ApiTags('products')
-@Controller('products')
-export class ProductController {
-  constructor(private readonly productsService: ProductService) { }
+@ApiTags('TournamentResults')
+@Controller('leaderboard')
+export class TournamentResultController {
+  constructor(private readonly tournamentResultsService: TournamentResultService) { }
 
   @Get(':id?')
   @ApiParam({ name: 'id', type: 'number', allowEmptyValue: true, required: false, allowReserved: false })
-  @ApiOkResponse({ description: 'Successfully get product' })
+  @ApiOkResponse({ description: 'Successfully fetch leaderboard' })
   @ApiNotFoundResponse({ description: 'Data is not exist' })
   @ApiBadRequestResponse({ description: 'Internal Server Error' })
   public async getProducts(
     @Res() res,
-    @Param() { id }: GetProductDto,
-  ): Promise<IProduct> {
+    @Param() { id }: GetTournamentResultDto,
+  ): Promise<ITournamentResult> {
     try {
-      const product = await this.productsService.getProducts(id)
+      const leaderboard = await this.tournamentResultsService.get(id)
 
       return res.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
-        message: id ? `Get product with id ${id} success` : 'Get all product success',
-        data: product
+        message: id ? `Get leaderboard with id ${id} success` : 'Get all leaderboard success',
+        data: leaderboard
       });
     } catch (err) {
       return res.status(err.statusCode || 400).json({
@@ -38,18 +38,18 @@ export class ProductController {
   }
 
   @Post()
-  @ApiOkResponse({ description: 'Successfully create product' })
+  @ApiOkResponse({ description: 'Insert new leaderboard data success' })
   @ApiBadRequestResponse({ description: 'Internal Server Error' })
   public async addProduct(
     @Res() res,
-    @Body() productDto: CreateProductDto,
-  ): Promise<IProduct> {
+    @Body() tourResDto: CreateTournamentResultDto,
+  ): Promise<ITournamentResult> {
     try {
-      const product = await this.productsService.create(productDto)
+      await this.tournamentResultsService.create(tourResDto)
 
       return res.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
-        message: `Success add product with name "${product.name}"`,
+        message: `Create data successfully`,
       });
     } catch (err) {
       return res.status(err.statusCode || 400).json({ message: err.message || 'Internal Server Error' })
@@ -57,20 +57,20 @@ export class ProductController {
   }
 
   @Put(':id')
-  @ApiOkResponse({ description: 'Successfully get product' })
+  @ApiOkResponse({ description: 'Successfully edit leaderboard data' })
   @ApiNotFoundResponse({ description: 'Data is not exist' })
   @ApiBadRequestResponse({ description: 'Internal Server Error' })
   public async updateProducts(
     @Res() res,
-    @Param() { id }: DeleteProductDto,
-    @Body() productDto: UpdateProductDto,
-  ): Promise<IProduct> {
+    @Param() { id }: DeleteTournamentResultDto,
+    @Body() productDto: CreateTournamentResultDto,
+  ): Promise<ITournamentResult> {
     try {
-      const product = await this.productsService.updateProduct(id, productDto)
+      await this.tournamentResultsService.update(id, productDto)
 
       return res.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
-        message: `Success update product with id "${product.id}"`,
+        message: `Update leaderboard data success`,
       });
     } catch (err) {
       return res.status(err.statusCode || 400).json({
@@ -81,19 +81,19 @@ export class ProductController {
   }
 
   @Delete(':id')
-  @ApiOkResponse({ description: 'Successfully get product' })
+  @ApiOkResponse({ description: 'Successfully delete leaderboard data' })
   @ApiNotFoundResponse({ description: 'Data is not exist' })
   @ApiBadRequestResponse({ description: 'Internal Server Error' })
   public async deleteProducts(
     @Res() res,
-    @Param() { id }: DeleteProductDto
-  ): Promise<IProduct> {
+    @Param() { id }: DeleteTournamentResultDto
+  ): Promise<ITournamentResult> {
     try {
-      await this.productsService.deleteProduct(id)
+      await this.tournamentResultsService.delete(id)
 
       return res.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
-        message: `Success delete product with id "${id}"`,
+        message: `Deleting leaderboard data success`,
       });
     } catch (err) {
       return res.status(err.statusCode || 400).json({

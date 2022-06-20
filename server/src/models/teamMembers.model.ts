@@ -1,4 +1,4 @@
-// import { ITournament } from '@/interfaces/tournament.interface';
+import { ITeamMember } from '@/interfaces/teamMembers.interface';
 import { Entity, PrimaryGeneratedColumn, Column, DeleteDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Teams } from './teams.model';
 import { Users } from './users.model';
@@ -14,7 +14,7 @@ class ModelRelations {
 }
 
 @Entity()
-export class TeamMembers extends ModelRelations /* implements ITournament */ {
+export class TeamMembers extends ModelRelations implements ITeamMember {
   @PrimaryGeneratedColumn()
   id: number;
 

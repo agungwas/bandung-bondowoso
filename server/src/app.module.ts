@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProductModule } from '@modules/product.module';
-import { TournamentModule } from '@modules/tournament.module';
+import { TournamentResultModule } from './modules/tournamentResult.module';
 
 
 @Module({
@@ -16,8 +15,7 @@ import { TournamentModule } from '@modules/tournament.module';
       migrations: ['dist/database/migrations/*.js'],
       entities: ['dist/models/*.model.js'],
     }),
-    ProductModule,
-    TournamentModule
+    TournamentResultModule
   ]
 })
 export class AppModule {}
