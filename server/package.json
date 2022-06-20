@@ -18,7 +18,15 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "seeder": "ts-node ./node_modules/typeorm-seeding/dist/cli.js",
+    "db:seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config",
+    "db:seed:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js seed",
+    "db:mig:status": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:show",
+    "db:mig:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run",
+    "db:mig:revert": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:revert",
+    "db:drop": "ts-node -r tsconfig-paths/register  ./node_modules/typeorm/cli.js schema:drop",
+    "db:setup": "npm run db:drop && npm run db:mig:run && npm run db:seed:run"
   },
   "dependencies": {
     "@nestjs/common": "^8.4.4",
@@ -37,13 +45,15 @@
     "rxjs": "^7.5.5",
     "sqlite3": "^5.0.8",
     "swagger-ui-express": "^4.3.0",
-    "typeorm": "^0.2.44"
+    "typeorm": "^0.2.44",
+    "typeorm-seeding": "^1.6.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.2.5",
     "@nestjs/schematics": "^8.0.11",
     "@nestjs/testing": "^8.4.4",
     "@types/express": "^4.17.13",
+    "@types/faker": "^6.6.9",
     "@types/jest": "^27.5.0",
     "@types/node": "^16.0.0",
     "@types/supertest": "^2.0.12",
