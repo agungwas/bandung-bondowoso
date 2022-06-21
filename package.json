@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build-fe": "cd client && npm i && npm run build ",
-    "build-be": "cd server && npm i && npm run build && npm run start:prod",
-    "build": "npm run build-fe && npm run build-be"
+    "build-be": "cd server && npm i && npm run build && npm run db:setup",
+    "build": "npm run build-fe && npm run build-be",
+    "start": "cd server && npm run start:prod"
   },
   "engines": {
     "node": "16.14.2",
