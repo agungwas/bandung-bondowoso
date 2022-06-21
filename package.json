@@ -4,7 +4,9 @@
   "description": "NestJs and React App with monorepo",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-fe": "cd client && npm i && npm run build ",
+    "build-be": "cd ../server && npm i && npm run build && npm run start:prod",
+    "build": "npm run build-fe && npm run build-be"
   },
   "repository": {
     "type": "git",
