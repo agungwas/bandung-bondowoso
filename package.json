@@ -1,0 +1,19 @@
+{
+  "name": "monorepo-nestjs-react",
+  "version": "1.0.0",
+  "description": "NestJs and React App with monorepo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agungwas/bandung-bondowoso.git"
+  },
+  "author": "Agung Setya Pratama <agungwas@gmail.com> (https://github.com/agungwas)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/agungwas/bandung-bondowoso/issues"
+  },
+  "homepage": "https://github.com/agungwas/bandung-bondowoso#readme"
+}
