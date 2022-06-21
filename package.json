@@ -5,8 +5,12 @@
   "main": "index.js",
   "scripts": {
     "build-fe": "cd client && npm i && npm run build ",
-    "build-be": "cd ../server && npm i && npm run build && npm run start:prod",
+    "build-be": "cd server && npm i && npm run build && npm run start:prod",
     "build": "npm run build-fe && npm run build-be"
+  },
+  "engines": {
+    "node": "16.14.2",
+    "npm": "8.5.0"
   },
   "repository": {
     "type": "git",

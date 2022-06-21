@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { TournamentResultModule } from './modules/tournamentResult.module';
 
-console.log(join(__dirname, '..', '..', 'client', 'build'), 'ini folder')
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
