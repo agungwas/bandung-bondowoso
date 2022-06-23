@@ -20,8 +20,9 @@ export const fetchLeaderboard = {
 }
 
 export const addLeaderboard = {
-  request: (): AddLeaderboard.Request => ({
+  request: (data: AddLeaderboard.RequestPayload): AddLeaderboard.Request => ({
     type: ADD_LEADERBOARD.REQUEST,
+    payload: data
   }),
   success: (payload: AddLeaderboard.SuccessPayload): AddLeaderboard.Success => ({
     type: ADD_LEADERBOARD.SUCCESS,

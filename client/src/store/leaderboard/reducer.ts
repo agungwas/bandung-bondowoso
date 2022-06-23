@@ -1,4 +1,5 @@
 import {
+  ADD_LEADERBOARD,
   FETCH_LEADERBOARD
 } from 'store/leaderboard/actionTypes';
 
@@ -30,6 +31,23 @@ const reducer = (state = initialState, action: LeaderboardActions) => {
         pending: false,
         data: [],
         error: action.payload.error,
+      };
+    case ADD_LEADERBOARD.REQUEST:
+      return {
+        ...state,
+        pending: true,
+      };
+    case ADD_LEADERBOARD.SUCCESS:
+      return {
+        ...state,
+        pending: false,
+        error: null,
+      };
+    case ADD_LEADERBOARD.FAILURE:
+      return {
+        ...state,
+        pending: false,
+        error: action.payload.message,
       };
     default:
       return {

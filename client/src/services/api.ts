@@ -15,6 +15,21 @@ export const setupClients = (store: Store) => {
         },
         err => Promise.reject(err)
     );
+
+    // Response interceptor for API calls
+    api.interceptors.response.use(
+      response => {
+        return response;
+      },
+      async function (error) {
+        const originalRequest = error.config;
+        const status = error.response.status;
+        const data = error.response.data;
+        console.log('==== Interceptors Error Response ====', error.response);
+
+        return Promise.reject(error);
+      }
+    );
 }
 
 export enum Method {
@@ -24,7 +39,7 @@ export enum Method {
   DELETE = 'DELETE',
 }
 
-export interface ApiResponse<T> {
+export interface ApiResponse<T = undefined> {
   statusCode: number
   message: string
   data: T

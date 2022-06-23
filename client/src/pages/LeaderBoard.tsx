@@ -1,20 +1,23 @@
 import Select from 'components/Select'
 import { useEffect, useState } from 'react'
-import { Button, Form, Modal } from 'react-bootstrap'
+import { Button, Form, Modal, Spinner } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchLeaderboard } from 'store/leaderboard/actions'
+import { addLeaderboard, fetchLeaderboard } from 'store/leaderboard/actions'
 import { selectors } from 'store/rootSelector'
 import { fetchTeamRequest } from 'store/team/actions'
 import { fetchTournamentRequest } from 'store/tournament/actions'
+import { toast } from 'react-toastify'
 
-export const LeaderBoardPage = () => {
+const LeaderBoardPage = () => {
   const dispatch = useDispatch()
   const leaderboard = useSelector(selectors.leaderboard.data);
   const team = useSelector(selectors.team.data)
   const tournament = useSelector(selectors.tournament.data)
+  const loading = useSelector(selectors.leaderboard.pending)
   const [showAddModal, setShowAddModal] = useState<boolean>(false)
   const [teamOpt, setTeamOpt] = useState<number | 'default'>('default')
   const [tournamentOpt, setTournamentOpt] = useState<number | 'default'>('default')
+  const [position, setPosition] = useState<number>(0)
 
   console.log(leaderboard, 'leaderboard')
   useEffect(() => {
@@ -25,6 +28,11 @@ export const LeaderBoardPage = () => {
     dispatch(fetchTeamRequest())
     dispatch(fetchTournamentRequest())
   }, [showAddModal, dispatch])
+
+  const addTourResult: React.FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault()
+    dispatch(addLeaderboard.request({ position, team_id: +teamOpt || 0, tournament_id: +tournamentOpt || 0 }))
+  }
 
   return (
     <div className="content-layout">
@@ -67,8 +75,8 @@ export const LeaderBoardPage = () => {
               </Modal.Title>
             </Modal.Header> */}
             <Modal.Body className='bg-dark'>
-              <Form>
-                  <Form.Control as="input" type='number' placeholder='Position'/>
+              <Form onSubmit={addTourResult}>
+                  <Form.Control as="input" type='number' placeholder='Position' value={position} onChange={e => setPosition(+e.target.value)}/>
                   <Select
                     options={tournament.map(el => ({ id: el.id, label: el.title }))}
                     setVal={(e: any) => setTournamentOpt(+e.target.value)}
@@ -79,15 +87,27 @@ export const LeaderBoardPage = () => {
                     setVal={(e: any) => setTeamOpt(+e.target.value)}
                     state={teamOpt}
                   />
-                  <Button className='mt-3'>
-                    Submit
-                  </Button>
+                  {!loading && <Button className='mt-3' type='submit'>Submit</Button>}
+                  {loading && (
+                    <Button variant="primary" disabled>
+                      <Spinner
+                        as="span"
+                        animation="grow"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                      Loading...
+                    </Button>
+                  )}
               </Form>
             </Modal.Body>
           </Modal>
           <div className="content">
             <div className="leaderboards">
-              <button type="button" className="_btn-signup btn btn-success mb-3" onClick={_ => setShowAddModal(true)}>Add Result</button>
+              <div className="w-100 d-flex justify-content-end h-25 mb-3">
+                <button type="button" className={`tabs__item font-weight-bold btn btn-base btn-block mr-0 w-0 p-3 ${showAddModal ? 'active' : ''}`} onClick={_ => setShowAddModal(true)}>Add Result</button>
+              </div>
               <table className="leaderboard-table">
                 <thead>
                   <tr>
@@ -131,3 +151,5 @@ export const LeaderBoardPage = () => {
     </div>
   )
 } 
+
+export default LeaderBoardPage

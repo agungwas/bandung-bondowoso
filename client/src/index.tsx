@@ -5,7 +5,10 @@ import {persistor, store} from 'store';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import {BrowserRouter} from 'react-router-dom';
-import {App} from 'App';
+import Router from 'route';
+
+import 'styles/app.scss'; 
+import 'react-toastify/dist/ReactToastify.css';
 
 /*Set Axios Clients*/
 setupClients(store);
@@ -19,7 +22,7 @@ root.render(
         <Provider store={store}>
             <PersistGate persistor={persistor}>
                 <BrowserRouter>
-                    <App/>
+                    <Router/>
                 </BrowserRouter>
             </PersistGate>
         </Provider>

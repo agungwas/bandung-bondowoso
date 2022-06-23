@@ -3,15 +3,12 @@ import {RootState} from 'store';
 import storage from 'redux-persist/lib/storage';
 import persistReducer from 'redux-persist/es/persistReducer';
 
-const initialState = {
-  leaderboardList: []
-}
+export const initialState = {}
 
 export const rootSlice = createSlice({
     name: 'root',
     initialState: initialState,
-    reducers: {
-    }
+    reducers: {}
 })
 
 const rootPersistConfig = {

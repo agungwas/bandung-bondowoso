@@ -87,6 +87,12 @@ export declare namespace AddLeaderboard {
 
   interface FailurePayload extends AddLeaderboard.SuccessPayload {}
 
+  interface RequestPayload {
+    team_id: number
+    position: number
+    tournament_id: number
+  }
+
   interface Success {
     type: typeof ADD_LEADERBOARD.SUCCESS
     payload: AddLeaderboard.SuccessPayload
@@ -99,6 +105,7 @@ export declare namespace AddLeaderboard {
 
   interface Request {
     type: typeof ADD_LEADERBOARD.REQUEST;
+    payload: AddLeaderboard.RequestPayload
   }
 }
 

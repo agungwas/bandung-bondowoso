@@ -1,7 +1,7 @@
 import {persistStore} from 'redux-persist';
-import {logger} from "redux-logger";
-import {configureStore} from "@reduxjs/toolkit";
-import createSagaMiddleware from "redux-saga";
+import {logger} from 'redux-logger';
+import {configureStore} from '@reduxjs/toolkit';
+import createSagaMiddleware from 'redux-saga';
 import { rootSaga } from 'store/rootSaga'
 import { reducers as rootReducer } from 'store/rootReducer';
 
