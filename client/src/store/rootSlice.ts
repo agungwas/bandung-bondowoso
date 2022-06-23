@@ -1,9 +1,10 @@
-import {createSlice} from "@reduxjs/toolkit";
-import {RootState} from "./store";
-import storage from "redux-persist/lib/storage";
-import persistReducer from "redux-persist/es/persistReducer";
+import {createSlice} from '@reduxjs/toolkit';
+import {RootState} from 'store';
+import storage from 'redux-persist/lib/storage';
+import persistReducer from 'redux-persist/es/persistReducer';
 
 const initialState = {
+  leaderboardList: []
 }
 
 export const rootSlice = createSlice({
@@ -12,7 +13,6 @@ export const rootSlice = createSlice({
     reducers: {
     }
 })
-
 
 const rootPersistConfig = {
     key: 'root',

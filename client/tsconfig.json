@@ -23,5 +23,6 @@
   },
   "include": [
     "src"
-  ]
+, "../dicoba/src/store/todo/actions.ts"  ],
+  "exclude": [ "node_modules", "build" ]
 }

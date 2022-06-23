@@ -3,7 +3,9 @@ import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
-import { TournamentResultModule } from './modules/tournamentResult.module';
+import { TeamModule } from 'modules/team.module';
+import { TournamentResultModule } from 'modules/tournamentResult.module';
+import { TournamentModule } from './modules/tournament.module';
 
 
 @Module({
@@ -20,7 +22,9 @@ import { TournamentResultModule } from './modules/tournamentResult.module';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', '..', 'client', 'build'),
     }),
-    TournamentResultModule
+    TournamentResultModule,
+    TeamModule,
+    TournamentModule
   ]
 })
 export class AppModule {}

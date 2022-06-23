@@ -2,7 +2,8 @@ import {persistStore} from 'redux-persist';
 import {logger} from "redux-logger";
 import {configureStore} from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
-import {rootSaga,rootReducer} from "app";
+import { rootSaga } from 'store/rootSaga'
+import { reducers as rootReducer } from 'store/rootReducer';
 
 const STATUS_APP = process.env.NODE_ENV !== 'production';
 
@@ -28,3 +29,4 @@ export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+

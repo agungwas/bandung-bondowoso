@@ -1,15 +1,12 @@
 import axios from 'axios';
 import {Store} from "@reduxjs/toolkit";
+console.log(process.env.REACT_APP_API_BASE_URL + '/api', 'ini dari sini')
 
-export const main = axios.create({
-    // TODO: SET BASE URL FOR API
-    baseURL: 'localhost:8000/',
-});
+export const api = axios.create({ baseURL: process.env.REACT_APP_API_BASE_URL + '/api' });
 
 export const setupClients = (store: Store) => {
-    main.interceptors.request.use(
+    api.interceptors.request.use(
         (config: any) => {
-            // TODO: If you have a token, enter it here
             /*const {auth: {authToken}} = store.getState();
             if (authToken) {
                 config.headers.Authorization = `Bearer ${authToken}`;
@@ -18,4 +15,17 @@ export const setupClients = (store: Store) => {
         },
         err => Promise.reject(err)
     );
+}
+
+export enum Method {
+  POST = 'POST',
+  GET = 'GET',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
+}
+
+export interface ApiResponse<T> {
+  statusCode: number
+  message: string
+  data: T
 }

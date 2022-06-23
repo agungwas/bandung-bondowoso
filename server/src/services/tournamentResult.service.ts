@@ -16,7 +16,7 @@ export class TournamentResultService {
   ) {}
 
   public async get(tournamentResultId: number) {
-    const opt: FindManyOptions<TournamentResults> = { relations: ['team', 'team.members', 'team.members.user'], order: { point: 'DESC' }}
+    const opt: FindManyOptions<TournamentResults> = { relations: ['team', 'team.members', 'team.captain', 'team.members.user'], order: { point: 'DESC' }}
     const data = tournamentResultId ? await this.tournamentResultModel.findOne({ ...opt, where: { id: tournamentResultId }}) : await this.tournamentResultModel.find(opt)
     if (!data) throw { statusCode: 404, message: 'Data not found' }
 

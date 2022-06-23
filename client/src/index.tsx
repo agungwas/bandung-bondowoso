@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import {setupClients} from "app/axiosClinets";
-import {persistor, store} from "app/store";
-import {Provider} from "react-redux";
-import {PersistGate} from "redux-persist/integration/react";
-import {BrowserRouter} from "react-router-dom";
-import {App} from "app";
+import {setupClients} from 'services/api';
+import {persistor, store} from 'store';
+import {Provider} from 'react-redux';
+import {PersistGate} from 'redux-persist/integration/react';
+import {BrowserRouter} from 'react-router-dom';
+import {App} from 'App';
 
 /*Set Axios Clients*/
 setupClients(store);
