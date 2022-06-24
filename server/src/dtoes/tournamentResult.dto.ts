@@ -24,7 +24,8 @@ export class GetTournamentResultDto {
   @ApiProperty()
   tournament_id?: number
 
-  @ValidateIf(o => !o.tournament_id)
+  @ValidateIf(o => o.tournament_id)
+  @IsOptional()
   @IsNumber({ allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 }, { message: 'Selected leaderboard data is not valid' })
   @ApiProperty()
   id?: number

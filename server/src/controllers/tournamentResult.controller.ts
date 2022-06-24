@@ -23,6 +23,7 @@ export class TournamentResultController {
     @Param() { id }: GetTournamentResultDto,
   ): Promise<ITournamentResult> {
     try {
+      if (!id && !tournament_id) throw { statusCode: 400, message: 'Please select tournament or leaderboard' }
       const leaderboard = await this.tournamentResultsService.get({ id, tournament_id })
 
       return res.status(HttpStatus.OK).json({

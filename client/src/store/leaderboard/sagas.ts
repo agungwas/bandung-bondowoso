@@ -12,8 +12,8 @@ import { addLeaderboard, getLeaderboard } from 'store/leaderboard/actions';
 import { ADD_LEADERBOARD, GET_LEADERBOARD } from 'store/leaderboard/actionTypes';
 import { AddLeaderboard, GetLeaderboard, ILeaderboard } from 'store/leaderboard/types';
 
-const getLeaderboardApi = (payload: GetLeaderboard.RequestPayload) =>
-  api.get<ApiResponse<ILeaderboard[]>>('leaderboard', { params: payload }).then(data => data.data);
+const getLeaderboardApi = ({ tournament_id, tournament_result_id }: GetLeaderboard.RequestPayload) =>
+  api.get<ApiResponse<ILeaderboard[]>>('leaderboard/' + (tournament_result_id || ''), { params: { tournament_id } }).then(data => data.data);
 
 const addLeaderboardsApi = ({ team_id, position, tournament_id }: AddLeaderboard.RequestPayload) => 
   api.post<ApiResponse>('leaderboard', { team_id, position, tournament_id }).then(data => data.data)
