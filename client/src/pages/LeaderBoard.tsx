@@ -144,7 +144,6 @@ const LeaderBoardPage = () => {
                     setVal={(e: any) => setTeamOpt(+e.target.value)}
                     state={teamOpt}
                   />
-                  {loadingAddLeaderboard ? 'true' : 'false'}
                   {!loadingAddLeaderboard && <Button className='mt-3' type='submit'>Submit</Button>}
                   {loadingAddLeaderboard && (
                     <Button variant="primary" disabled>
