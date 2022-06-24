@@ -1,10 +1,12 @@
-import axios from 'axios';
+import axios, { AxiosInterceptorManager, AxiosResponse } from 'axios';
 import {Store} from "@reduxjs/toolkit";
+import { toast } from 'react-toastify';
 console.log(process.env.REACT_APP_API_BASE_URL + '/api', 'ini dari sini')
 
 export const api = axios.create({ baseURL: process.env.REACT_APP_API_BASE_URL + '/api' });
 
 export const setupClients = (store: Store) => {
+    // Request interceptor for API calls
     api.interceptors.request.use(
         (config: any) => {
             /*const {auth: {authToken}} = store.getState();
@@ -18,14 +20,23 @@ export const setupClients = (store: Store) => {
 
     // Response interceptor for API calls
     api.interceptors.response.use(
-      response => {
-        return response;
-      },
-      async function (error) {
+      response => response,
+      async function ({ response: error }: { response: ErrorResponse }) {
+        // console.log('====', error)
         const originalRequest = error.config;
-        const status = error.response.status;
-        const data = error.response.data;
-        console.log('==== Interceptors Error Response ====', error.response);
+        const status = error.status;
+        const data = error.data;
+        console.log('==== Interceptors Error Response ====', error);
+        // // console.log('==== Interceptors Error Config ====', error.config);
+
+        // // console.log('====', error.config, error.config)
+
+        // // console.log(originalRequest._retry)
+        if (status > 399) {
+          Array.isArray(error.data.message) 
+            ? error.data.message.forEach((el: string) => toast(el))
+            : toast(error.data.message) 
+        }
 
         return Promise.reject(error);
       }
@@ -43,4 +54,8 @@ export interface ApiResponse<T = undefined> {
   statusCode: number
   message: string
   data: T
+}
+
+export interface ErrorResponse<T = undefined> extends AxiosResponse<ApiResponse<T>> {
+  data: ApiResponse<T>
 }

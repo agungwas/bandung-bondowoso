@@ -8,10 +8,10 @@ import LeaderBoardPage from 'pages/LeaderBoard';
 const Router = () => {
   return (
     <div id="__next">
+        <ToastContainer/> 
       <div className="root-page row justify-content-center" style={{ backgroundColor: '#202228' }}>
 
         <NavBar />
-        <ToastContainer/> 
         <Routes>
           <Route index element={<LeaderBoardPage />} />
         </Routes>

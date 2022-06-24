@@ -9,6 +9,7 @@ import Router from 'route';
 
 import 'styles/app.scss'; 
 import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 /*Set Axios Clients*/
 setupClients(store);
@@ -21,6 +22,7 @@ root.render(
     <React.StrictMode>
         <Provider store={store}>
             <PersistGate persistor={persistor}>
+              <ToastContainer/>
                 <BrowserRouter>
                     <Router/>
                 </BrowserRouter>

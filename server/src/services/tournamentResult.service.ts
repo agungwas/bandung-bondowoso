@@ -1,6 +1,7 @@
 import { CreateTournamentResultDto } from '@/dtoes/tournamentResult.dto';
 import { ITournamentResult } from '@/interfaces/tournamentResults.interface';
 import { Teams } from '@/models/teams.model';
+import { Tournaments } from '@/models/tournaments.model';
 import { Users } from '@/models/users.model';
 import { TournamentResults } from '@models/tournamentResults.model';
 import { Injectable } from '@nestjs/common';
@@ -13,6 +14,7 @@ export class TournamentResultService {
     @InjectRepository(TournamentResults) private readonly tournamentResultModel: Repository<TournamentResults>,
     @InjectRepository(Users) private readonly userModel: Repository<Users>,
     @InjectRepository(Teams) private readonly teamModel: Repository<Teams>,
+    @InjectRepository(Tournaments) private readonly tournamentModel: Repository<Tournaments>,
   ) {}
 
   public async get(tournamentResultId: number) {
@@ -27,7 +29,14 @@ export class TournamentResultService {
     const tourData = await this.tournamentResultModel.findOne({ where: { team_id: tourResDto.team_id, tournament_id: tourResDto.tournament_id }})
     if (tourData) throw { statusCode: 400, message: 'Team already updated with tournament'}
 
+    const positionExist = await this.tournamentResultModel.findOne({ where: { position: tourResDto.position, tournament_id: tourResDto.tournament_id }})
+    if (positionExist) throw { statusCode: 400, message: 'Another team already have same position' }
+
+    const tournamentData = await this.tournamentModel.findOne({ where: { id: tourResDto.tournament_id }})
+    if (!tournamentData) throw { statusCode: 404, message: 'Selected tournament is not exist' }
+    
     const data = await this.teamModel.findOne({ where: { id: tourResDto.team_id }, relations: ['members', 'members.user']})
+    if (!data) throw { statusCode: 404, message: 'Team is not exist' }
     const coin = this.positionToCoin(tourResDto.position)
 
     if (coin) {

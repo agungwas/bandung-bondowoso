@@ -12,26 +12,39 @@ const LeaderBoardPage = () => {
   const dispatch = useDispatch()
   const leaderboard = useSelector(selectors.leaderboard.data);
   const team = useSelector(selectors.team.data)
-  const tournament = useSelector(selectors.tournament.data)
-  const loading = useSelector(selectors.leaderboard.pending)
+  const tournamentData = useSelector(selectors.tournament.data)
+  const loadAddResult = useSelector(selectors.leaderboard.pending)
+  // const loadAddResult = useSelector(selectors.leaderboard.error)
   const [showAddModal, setShowAddModal] = useState<boolean>(false)
   const [teamOpt, setTeamOpt] = useState<number | 'default'>('default')
   const [tournamentOpt, setTournamentOpt] = useState<number | 'default'>('default')
-  const [position, setPosition] = useState<number>(0)
+  const [position, setPosition] = useState<number>(1)
 
   console.log(leaderboard, 'leaderboard')
   useEffect(() => {
     dispatch(fetchLeaderboard.request())
   }, [dispatch])
 
+  // useEffect(() => {
+  //   if (!loadAddResult && showAddModal) {
+  //     dispatch(fetchLeaderboard.request())
+  //     setShowAddModal(false)
+  //   }
+  //   console.log(loadAddResult, 'ini effect addResult')
+  //   console.log(showAddModal, 'ini effect addModal')
+  // }, [dispatch, loadAddResult, showAddModal])
+
   useEffect(() => {
-    dispatch(fetchTeamRequest())
-    dispatch(fetchTournamentRequest())
+    if (showAddModal) {
+      dispatch(fetchTeamRequest())
+      dispatch(fetchTournamentRequest())
+    }
   }, [showAddModal, dispatch])
 
   const addTourResult: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault()
     dispatch(addLeaderboard.request({ position, team_id: +teamOpt || 0, tournament_id: +tournamentOpt || 0 }))
+
   }
 
   return (
@@ -76,9 +89,9 @@ const LeaderBoardPage = () => {
             </Modal.Header> */}
             <Modal.Body className='bg-dark'>
               <Form onSubmit={addTourResult}>
-                  <Form.Control as="input" type='number' placeholder='Position' value={position} onChange={e => setPosition(+e.target.value)}/>
+                  <Form.Control as="input" type='number' placeholder='Position' min={1} value={position} onChange={e => setPosition(+e.target.value)}/>
                   <Select
-                    options={tournament.map(el => ({ id: el.id, label: el.title }))}
+                    options={tournamentData.map(el => ({ id: el.id, label: el.title }))}
                     setVal={(e: any) => setTournamentOpt(+e.target.value)}
                     state={tournamentOpt}
                   />
@@ -87,8 +100,8 @@ const LeaderBoardPage = () => {
                     setVal={(e: any) => setTeamOpt(+e.target.value)}
                     state={teamOpt}
                   />
-                  {!loading && <Button className='mt-3' type='submit'>Submit</Button>}
-                  {loading && (
+                  {!loadAddResult && <Button className='mt-3' type='submit'>Submit</Button>}
+                  {loadAddResult && (
                     <Button variant="primary" disabled>
                       <Spinner
                         as="span"
