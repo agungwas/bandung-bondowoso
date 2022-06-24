@@ -22,12 +22,15 @@ const LeaderBoardPage = () => {
   const [position, setPosition] = useState<number>(1)
 
   useEffect(() => {
-    if (selectedTourList !== 'default') dispatch(getLeaderboard.request({ tournament_id: selectedTourList }))
+    if (selectedTourList !== 'default' && !loadingAddLeaderboard) dispatch(getLeaderboard.request({ tournament_id: selectedTourList }))
     dispatch(fetchTournamentRequest())
   }, [dispatch, loadingAddLeaderboard, selectedTourList])
 
   useEffect(() => {
     if (showModalAddLeaderboard) {
+      setTournamentOpt('default')
+      setTeamOpt('default')
+      setPosition(1)
       dispatch(fetchTeamRequest())
       dispatch(fetchTournamentRequest())
     }
