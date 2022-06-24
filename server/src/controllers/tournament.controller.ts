@@ -1,4 +1,4 @@
-import { GetTournamentResultDto } from '@/dtoes/tournamentResult.dto';
+import { GetTournamentDto } from '@/dtoes/tournament.dto';
 import { ITournament } from '@/interfaces/tournament.interface';
 import { TournamentService } from '@/services/tournament.service';
 import {
@@ -19,7 +19,7 @@ export class TournamentController {
   @ApiBadRequestResponse({ description: 'Internal Server Error' })
   public async getProducts(
     @Res() res,
-    @Param() { id }: GetTournamentResultDto,
+    @Param() { id }: GetTournamentDto,
   ): Promise<ITournament> {
     try {
       const tournament = await this.tournamentService.get(id)

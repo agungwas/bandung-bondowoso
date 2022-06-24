@@ -1,7 +1,7 @@
 import { CreateTournamentResultDto, DeleteTournamentResultDto, GetTournamentResultDto } from '@/dtoes/tournamentResult.dto';
 import { ITournamentResult } from '@/interfaces/tournamentResults.interface';
 import {
-  Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res
+  Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Req, Res
 } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { TournamentResultService } from '@services/tournamentResult.service';
@@ -19,14 +19,15 @@ export class TournamentResultController {
   @ApiBadRequestResponse({ description: 'Internal Server Error' })
   public async getProducts(
     @Res() res,
+    @Query() { tournament_id }: GetTournamentResultDto,
     @Param() { id }: GetTournamentResultDto,
   ): Promise<ITournamentResult> {
     try {
-      const leaderboard = await this.tournamentResultsService.get(id)
+      const leaderboard = await this.tournamentResultsService.get({ id, tournament_id })
 
       return res.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
-        message: id ? `Get leaderboard with id ${id} success` : 'Get all leaderboard success',
+        message: 'Get leaderboard data success',
         data: leaderboard
       });
     } catch (err) {

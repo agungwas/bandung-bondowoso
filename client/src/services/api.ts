@@ -1,6 +1,6 @@
-import axios, { AxiosInterceptorManager, AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import {Store} from "@reduxjs/toolkit";
-import { toast } from 'react-toastify';
+import toastify from 'helpers/toastify';
 console.log(process.env.REACT_APP_API_BASE_URL + '/api', 'ini dari sini')
 
 export const api = axios.create({ baseURL: process.env.REACT_APP_API_BASE_URL + '/api' });
@@ -22,20 +22,14 @@ export const setupClients = (store: Store) => {
     api.interceptors.response.use(
       response => response,
       async function ({ response: error }: { response: ErrorResponse }) {
-        // console.log('====', error)
-        const originalRequest = error.config;
         const status = error.status;
-        const data = error.data;
-        console.log('==== Interceptors Error Response ====', error);
-        // // console.log('==== Interceptors Error Config ====', error.config);
+        const message = error.data.message;
+        // console.log('==== Interceptors Error Response ====', error);
 
-        // // console.log('====', error.config, error.config)
-
-        // // console.log(originalRequest._retry)
         if (status > 399) {
-          Array.isArray(error.data.message) 
-            ? error.data.message.forEach((el: string) => toast(el))
-            : toast(error.data.message) 
+          Array.isArray(message) 
+            ? message.forEach((el: string) => toastify.error(el))
+            : toastify.error(message) 
         }
 
         return Promise.reject(error);

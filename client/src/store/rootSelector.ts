@@ -3,7 +3,6 @@ import teamSelector from 'store/team/selectors';
 import tournamentSelector from 'store/tournament/selectors';
 
 const selectors = {
-	// Leaderboard
 	leaderboard: leaderboardSelector,
   team: teamSelector,
   tournament: tournamentSelector

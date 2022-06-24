@@ -1,4 +1,4 @@
-import { CreateTournamentResultDto } from '@/dtoes/tournamentResult.dto';
+import { CreateTournamentResultDto, GetTournamentResultDto } from '@/dtoes/tournamentResult.dto';
 import { ITournamentResult } from '@/interfaces/tournamentResults.interface';
 import { Teams } from '@/models/teams.model';
 import { Tournaments } from '@/models/tournaments.model';
@@ -17,17 +17,21 @@ export class TournamentResultService {
     @InjectRepository(Tournaments) private readonly tournamentModel: Repository<Tournaments>,
   ) {}
 
-  public async get(tournamentResultId: number) {
+  public async get({ id, tournament_id }: GetTournamentResultDto) {
     const opt: FindManyOptions<TournamentResults> = { relations: ['team', 'team.members', 'team.captain', 'team.members.user'], order: { point: 'DESC' }}
-    const data = tournamentResultId ? await this.tournamentResultModel.findOne({ ...opt, where: { id: tournamentResultId }}) : await this.tournamentResultModel.find(opt)
-    if (!data) throw { statusCode: 404, message: 'Data not found' }
+    let data: TournamentResults | TournamentResults[]
 
+    if (id) data = await this.tournamentResultModel.findOne({ ...opt, where: { id: { id, tournament_id } }})
+    else if (tournament_id) data = await this.tournamentResultModel.find({ ...opt, where: { tournament_id: tournament_id }})
+    else await this.tournamentResultModel.find(opt)
+
+    if (!data || (Array.isArray(data) && data.length === 0)) throw { statusCode: 404, message: 'Data not found' }
     return data
   }
 
   public async create(tourResDto: CreateTournamentResultDto): Promise<ITournamentResult> {
     const tourData = await this.tournamentResultModel.findOne({ where: { team_id: tourResDto.team_id, tournament_id: tourResDto.tournament_id }})
-    if (tourData) throw { statusCode: 400, message: 'Team already updated with tournament'}
+    if (tourData) throw { statusCode: 400, message: 'Team already exist in leaderboard'}
 
     const positionExist = await this.tournamentResultModel.findOne({ where: { position: tourResDto.position, tournament_id: tourResDto.tournament_id }})
     if (positionExist) throw { statusCode: 400, message: 'Another team already have same position' }

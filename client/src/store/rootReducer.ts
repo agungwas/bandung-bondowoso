@@ -6,10 +6,10 @@ import tournamentReducer from 'store/tournament/reducer';
 
 // TODO: SetReducers
 export const reducers = combineReducers({
-    root: rootReducer,
-    leaderboard: leaderboardReducer,
-    team: teamReducer,
-    tournament: tournamentReducer
+  root: rootReducer,
+  leaderboard: leaderboardReducer,
+  team: teamReducer,
+  tournament: tournamentReducer
 });
 
 export type RootState = ReturnType<typeof reducers>;

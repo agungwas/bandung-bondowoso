@@ -2,19 +2,23 @@ type SelectProps = {
   options: { id: number, label: string }[]
   state: number | 'default'
   setVal: any
+  className?: string
+  placeholder?: string
+  style?: React.CSSProperties
 }
 
 
-const Select: React.FC<SelectProps> = ({ options, setVal, state }) => {
-
+const Select: React.FC<SelectProps> = ({ options, setVal, state, className, placeholder, style }) => {
+  const label = placeholder ? placeholder : `Tampilkan: ${options.length} Data`
   return (
-    <div className="dropdown show mt-3">
+    <div className={"dropdown show mt-3 " + className}>
       <select
-        className="text-input-search dropdown-toggle btn btn-secondary"
+        className="text-input-search dropdown-toggle btn btn-secondary "
         style={{
           width: "100%",
           display: "flex",
-          justifyContent: "space-between"
+          justifyContent: "space-between",
+          ...style
         }}
         value={state}
         onChange={setVal}
@@ -26,7 +30,7 @@ const Select: React.FC<SelectProps> = ({ options, setVal, state }) => {
           selected
           className="dropdown-item active"
           value={'default'}
-        >Tampilkan: {options.length} Data</option>
+        >{label}</option>
         {options.map((el, index) => (
           <option
             tabIndex={0}

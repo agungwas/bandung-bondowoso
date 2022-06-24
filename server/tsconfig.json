@@ -20,7 +20,7 @@
 			"@databases/*": ["database/*"],
 			"@decorators/*": ["decorators/*"],
 			"@interfaces/*": ["interfaces/*"]
-		},
+		}
   },
   "exclude": ["node_modules", "dist"]
 }

@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, Min } from "class-validator";
+import { IsNumber, IsOptional, Min, ValidateIf } from "class-validator";
 
 export class CreateTournamentResultDto {
   @IsNumber()
-  @Min(1, { message: 'Team id must bigger than 0' })
+  @Min(1, { message: 'Team is invalid' })
   @ApiProperty()
   team_id: number;
 
@@ -13,14 +13,19 @@ export class CreateTournamentResultDto {
   position: number;
 
   @IsNumber()
-  @Min(1, { message: 'Tournament id must bigger than 0' })
+  @Min(1, { message: 'Tournament is invalid' })
   @ApiProperty()
   tournament_id: number;
 }
 
 export class GetTournamentResultDto {
   @IsOptional()
-  @IsNumber()
+  @IsNumber({ allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 }, { message: 'Tournament is not valid' })
+  @ApiProperty()
+  tournament_id?: number
+
+  @ValidateIf(o => !o.tournament_id)
+  @IsNumber({ allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 }, { message: 'Selected leaderboard data is not valid' })
   @ApiProperty()
   id?: number
 }
