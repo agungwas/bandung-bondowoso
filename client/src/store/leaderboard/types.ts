@@ -1,4 +1,4 @@
-import { ADD_LEADERBOARD, GET_LEADERBOARD, REMOVE_LEADERBOARD } from 'store/leaderboard/actionTypes'
+import { ADD_LEADERBOARD, EDIT_LEADERBOARD, GET_LEADERBOARD, REMOVE_LEADERBOARD } from 'store/leaderboard/actionTypes'
 
 interface Database {
   id: number
@@ -41,20 +41,25 @@ export interface ILeaderboard extends Database {
 
 export interface LeaderboardState {
   get: {
-    loading: boolean,
-    data: ILeaderboard[],
-    error: null | string,
-  },
+    loading: boolean;
+    data: ILeaderboard[];
+    error: null | string;
+  };
   add: {
-    loading: boolean, 
-    error: null | string,
-    showModal: boolean
-  }
+    loading: boolean; 
+    error: null | string;
+    showModal: boolean;
+  };
   remove: {
-    loading: boolean, 
-    error: null | string,
-    selectedId: number
-  }
+    loading: boolean; 
+    error: null | string;
+    selectedId: number;
+  };
+  edit: {
+    loading: boolean; 
+    error: null | string;
+    selected: EditLeaderboard.SetSelectedDataPayload | null;
+  };
 }
 
 export declare namespace GetLeaderboard {
@@ -148,6 +153,40 @@ export declare namespace RemoveLeaderboard {
   }
 }
 
+export declare namespace EditLeaderboard {
+  interface FailurePayload {
+    message: string;
+    selected: EditLeaderboard.RequestPayload | null;
+  }
+
+  interface RequestPayload extends EditLeaderboard.SetSelectedDataPayload {}
+
+  interface SetSelectedDataPayload {
+    team_id?: number;
+    position?: number;
+    tournament_id?: number;
+    tournament_result_id?: number;
+  }
+
+  type Success = {
+    type: typeof EDIT_LEADERBOARD.SUCCESS;
+  }
+
+  type Failure = {
+    type: typeof EDIT_LEADERBOARD.FAILURE;
+    payload: EditLeaderboard.FailurePayload;
+  }
+
+  type Request = {
+    type: typeof EDIT_LEADERBOARD.REQUEST;
+    payload: EditLeaderboard.SetSelectedDataPayload | null
+  }
+
+  type SetSelectedData = {
+    type: typeof EDIT_LEADERBOARD.SET_SELECTED_DATA;
+    payload: EditLeaderboard.SetSelectedDataPayload | null
+  }
+}
 export type LeaderboardActions = 
   | AddLeaderboard.Failure
   | AddLeaderboard.Success
@@ -160,3 +199,7 @@ export type LeaderboardActions =
   | RemoveLeaderboard.Success
   | RemoveLeaderboard.Request
   | RemoveLeaderboard.SetSelectedId
+  | EditLeaderboard.Failure
+  | EditLeaderboard.Success
+  | EditLeaderboard.Request
+  | EditLeaderboard.SetSelectedData

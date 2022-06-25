@@ -1,11 +1,12 @@
 import Select from 'components/Select'
 import { useEffect, useState } from 'react'
-import { Button, Form, Modal, Spinner } from 'react-bootstrap'
+import { Button, Modal, Spinner } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'hooks'
-import { addLeaderboard, getLeaderboard, removeLeaderboard } from 'store/leaderboard/actions'
+import { addLeaderboard, editLeaderboard, getLeaderboard, removeLeaderboard } from 'store/leaderboard/actions'
 import { selectors } from 'store/rootSelector'
 import { fetchTeamRequest } from 'store/team/actions'
 import { fetchTournamentRequest } from 'store/tournament/actions'
+import LeaderboardModal from 'components/LeaderboardModal'
 
 const LeaderBoardPage = () => {
   const dispatch = useDispatch()
@@ -15,6 +16,8 @@ const LeaderBoardPage = () => {
   const showModalAddLeaderboard = useSelector(selectors.leaderboard.add.showModal)
   const selectedIdRemoveLeaderboard = useSelector(selectors.leaderboard.remove.selectedId)
   const loadingRemoveLeaderboard = useSelector(selectors.leaderboard.remove.loading)
+  const loadingEditLeaderboard = useSelector(selectors.leaderboard.edit.loading)
+  const selectedEditLeaderboard = useSelector(selectors.leaderboard.edit.selected)
   
   const team = useSelector(selectors.team.data)
   const tournamentData = useSelector(selectors.tournament.data)
@@ -25,27 +28,22 @@ const LeaderBoardPage = () => {
   const [position, setPosition] = useState<number>(1)
 
   useEffect(() => {
-    if (selectedTourList !== 'default' && !loadingAddLeaderboard && !loadingRemoveLeaderboard) {
+    if (selectedTourList !== 'default' && !loadingAddLeaderboard && !loadingRemoveLeaderboard && !loadingEditLeaderboard) {
       dispatch(getLeaderboard.request({ tournament_id: selectedTourList }))
     } else if (selectedTourList === 'default') {
       dispatch(fetchTournamentRequest())
     }
-  }, [dispatch, loadingAddLeaderboard, loadingRemoveLeaderboard, selectedTourList])
+  }, [dispatch, loadingAddLeaderboard, loadingRemoveLeaderboard, loadingEditLeaderboard, selectedTourList])
 
   useEffect(() => {
-    if (showModalAddLeaderboard) {
+    if (showModalAddLeaderboard || selectedEditLeaderboard) {
       setTournamentOpt('default')
       setTeamOpt('default')
       setPosition(1)
       dispatch(fetchTeamRequest())
       dispatch(fetchTournamentRequest())
     }
-  }, [showModalAddLeaderboard, dispatch])
-
-  const addTourResult: React.FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault()
-    dispatch(addLeaderboard.request({ position, team_id: +teamOpt || 0, tournament_id: +tournamentOpt || 0 }))
-  }
+  }, [showModalAddLeaderboard, selectedEditLeaderboard, dispatch])
 
   const leaderboardTable = () => {
     if (loadingGetLeaderboard) return (
@@ -98,8 +96,8 @@ const LeaderBoardPage = () => {
               <td>{el.team?.captain?.name}</td>
               <td>{el.point}</td>
               <td className="d-flex justify-content-around">
-                <div className="icon-close py-2"><img onClick={_ => dispatch(removeLeaderboard.setShowModal(el.id))} style={{ width: '18px' }} src="https://metaco.gg/icon/ic_close_button.svg" alt="close"/></div>
-                <div className="icon-close py-2"><img style={{ width: '18px' }} src="mono-state-edit.svg" alt="close"/></div>
+                <div className="icon-close py-2"><img onClick={_ => dispatch(removeLeaderboard.setConfirmModal(el.id))} style={{ width: '18px' }} src="https://metaco.gg/icon/ic_close_button.svg" alt="close"/></div>
+                <div className="icon-close py-2"><img onClick={_ => dispatch(editLeaderboard.setShowEditModal({ ...el, tournament_result_id: el.id }))} style={{ width: '18px' }} src="mono-state-edit.svg" alt="close"/></div>
               </td>
             </tr>
           ))}
@@ -134,52 +132,42 @@ const LeaderBoardPage = () => {
                 </div>
             </div>
           </div>
-          <Modal
+          <LeaderboardModal
             show={showModalAddLeaderboard}
-            size="lg"
-            centered
-            backdrop={true}
-            onHide={() => dispatch(addLeaderboard.setShowModal(false))}
-            backdropClassName="modal-backdrop foo-modal-backdrop in"
-            onBackdropClick={() => addLeaderboard.setShowModal(false)}
-          >
-            <Modal.Body className='bg-dark'>
-              <Form onSubmit={addTourResult}>
-                  <Form.Control as="input" type='number' placeholder='Position' min={1} value={position} onChange={e => setPosition(+e.target.value)}/>
-                  <Select
-                    options={tournamentData.map(el => ({ id: el.id, label: el.title }))}
-                    setVal={(e: any) => setTournamentOpt(+e.target.value)}
-                    state={tournamentOpt}
-                  />
-                  <Select
-                    options={team.map(el => ({ id: el.id, label: el.name }))}
-                    setVal={(e: any) => setTeamOpt(+e.target.value)}
-                    state={teamOpt}
-                  />
-                  {!loadingAddLeaderboard && <Button className='mt-3' type='submit'>Submit</Button>}
-                  {loadingAddLeaderboard && (
-                    <Button variant="primary" disabled>
-                      <Spinner
-                        as="span"
-                        animation="grow"
-                        size="sm"
-                        role="status"
-                        aria-hidden="true"
-                      />
-                      Loading...
-                    </Button>
-                  )}
-              </Form>
-            </Modal.Body>
-          </Modal>
+            hideFunc={addLeaderboard.setShowModal(false)}
+            loadingSubmit={loadingAddLeaderboard}
+            position={position}
+            setPosition={setPosition}
+            teamOpt={teamOpt}
+            setTeamOpt={setTeamOpt}
+            tournamentOpt={tournamentOpt}
+            setTournamentOpt={setTournamentOpt}
+            teamData={team}
+            tournamentData={tournamentData}
+            submitAction={addLeaderboard.request({ tournament_id: +tournamentOpt || 0, position: position, team_id: +teamOpt || 0 })}
+          />
+          <LeaderboardModal
+            show={!!selectedEditLeaderboard}
+            hideFunc={editLeaderboard.setShowEditModal(null)}
+            loadingSubmit={loadingEditLeaderboard}
+            position={selectedEditLeaderboard?.position || 0}
+            setPosition={e => dispatch(editLeaderboard.setShowEditModal({ position: e }))}
+            teamOpt={selectedEditLeaderboard?.team_id || 0}
+            setTeamOpt={e => dispatch(editLeaderboard.setShowEditModal({ team_id: e }))}
+            tournamentOpt={selectedEditLeaderboard?.tournament_id || 0}
+            setTournamentOpt={e => dispatch(editLeaderboard.setShowEditModal({ tournament_id: e }))}
+            teamData={team}
+            tournamentData={tournamentData}
+            submitAction={editLeaderboard.request(selectedEditLeaderboard)}
+          />
 
           <Modal
             show={!!selectedIdRemoveLeaderboard}
             size="sm"
             backdrop={true}
-            onHide={() => dispatch(removeLeaderboard.setShowModal(0))}
+            onHide={() => dispatch(removeLeaderboard.setConfirmModal(0))}
             backdropClassName="modal-backdrop foo-modal-backdrop in"
-            onBackdropClick={() => removeLeaderboard.setShowModal(0)}
+            onBackdropClick={() => removeLeaderboard.setConfirmModal(0)}
           >
             <Modal.Body className="bg-dark text-center">
                 {!loadingRemoveLeaderboard && (
@@ -194,7 +182,7 @@ const LeaderBoardPage = () => {
                             style={{ fontFamily: 'Gilroy-SemiBold'}}
                             disabled={!!loadingAddLeaderboard} 
                             variant="info" 
-                            onClick={_=> dispatch(removeLeaderboard.setShowModal(0))}
+                            onClick={_=> dispatch(removeLeaderboard.setConfirmModal(0))}
                           >Cancel</Button>
                           <Button 
                             className="mt-3" 

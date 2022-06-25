@@ -1,5 +1,6 @@
 import {
   ADD_LEADERBOARD,
+  EDIT_LEADERBOARD,
   GET_LEADERBOARD,
   REMOVE_LEADERBOARD
 } from 'store/leaderboard/actionTypes';
@@ -21,6 +22,11 @@ const initialState: LeaderboardState = {
     loading: false,
     error: null,
     selectedId: 0
+  },
+  edit: {
+    loading: false, 
+    error: null,
+    selected: null
   }
 };
 
@@ -48,6 +54,15 @@ const reducer = (state = initialState, action: LeaderboardActions): LeaderboardS
       return { ...state, remove: { loading: false, error: action.payload.message, selectedId: action.payload.selectedId }};
     case REMOVE_LEADERBOARD.SET_SELECTED_ID:
       return { ...state, remove: { ...state.remove, selectedId: action.payload }}
+    case EDIT_LEADERBOARD.REQUEST:
+      return { ...state, edit: { ...state.edit, loading: true }};
+    case EDIT_LEADERBOARD.SUCCESS:
+      return { ...state, edit: { loading: false, error: null, selected: null }};
+    case EDIT_LEADERBOARD.FAILURE:
+      return { ...state, edit: { loading: false, error: action.payload.message, selected: action.payload.selected }};
+    case EDIT_LEADERBOARD.SET_SELECTED_DATA:
+      if (action.payload) return { ...state, edit: { ...state.edit, selected: { ...state.edit.selected, ...action.payload }}}
+      else return { ...state, edit: { ...state.edit, selected: action.payload }}
     default:
       return { ...state };
   }

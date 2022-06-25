@@ -56,6 +56,16 @@ export class TournamentResultService {
   public async update(id: number, tourResDto: CreateTournamentResultDto): Promise<TournamentResults> {
     const data = await this.tournamentResultModel.findOne({ where: { id }, relations: ['team', 'team.members', 'team.members.user']});
     if (!data) throw { statusCode: 404, message: 'Data not found' }
+    if (!data.team) throw { statusCode: 404, message: 'Selected team is not exist' }
+    
+    const tournamentData = await this.tournamentModel.findOne({ where: { id: tourResDto.tournament_id }})
+    if (!tournamentData) throw { statusCode: 404, message: 'Selected tournament is not exist' }
+
+    const tourResData = await this.tournamentResultModel.findOne({ where: { team_id: tourResDto.team_id, tournament_id: tourResDto.tournament_id }})
+    if (tourResData) throw { statusCode: 400, message: 'Team already exist in leaderboard'}
+
+    const positionExist = await this.tournamentResultModel.findOne({ where: { position: tourResDto.position, tournament_id: tourResDto.tournament_id }})
+    if (positionExist) throw { statusCode: 400, message: 'Another team already have same position' }
 
     const lastCoin = this.positionToCoin(data.position)
     const currCoin = this.positionToCoin(tourResDto.position)

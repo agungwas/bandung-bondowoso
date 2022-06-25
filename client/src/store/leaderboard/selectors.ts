@@ -17,6 +17,11 @@ const leaderboardSelector = {
     error: createSelector((s: RootState) => s.leaderboard.remove.error, (leaderboards) => leaderboards),
     selectedId: createSelector((s: RootState) => s.leaderboard.remove.selectedId, (leaderboards) => leaderboards),
   },
+  edit: {
+    loading: createSelector((s: RootState) => s.leaderboard.edit.loading, (leaderboards) => leaderboards),
+    error: createSelector((s: RootState) => s.leaderboard.edit.error, (leaderboards) => leaderboards),
+    selected: createSelector((s: RootState) => s.leaderboard.edit.selected, (leaderboards) => leaderboards),
+  }
 }
 
 export default leaderboardSelector

@@ -8,9 +8,9 @@ import {
 } from 'redux-saga/effects';
 import { ApiResponse, api } from 'services/api';
 
-import { addLeaderboard, getLeaderboard, removeLeaderboard } from 'store/leaderboard/actions';
-import { ADD_LEADERBOARD, GET_LEADERBOARD, REMOVE_LEADERBOARD } from 'store/leaderboard/actionTypes';
-import { AddLeaderboard, GetLeaderboard, ILeaderboard, RemoveLeaderboard } from 'store/leaderboard/types';
+import { addLeaderboard, editLeaderboard, getLeaderboard, removeLeaderboard } from 'store/leaderboard/actions';
+import { ADD_LEADERBOARD, EDIT_LEADERBOARD, GET_LEADERBOARD, REMOVE_LEADERBOARD } from 'store/leaderboard/actionTypes';
+import { AddLeaderboard, EditLeaderboard, GetLeaderboard, ILeaderboard, RemoveLeaderboard } from 'store/leaderboard/types';
 
 const getLeaderboardApi = ({ tournament_id, tournament_result_id }: GetLeaderboard.RequestPayload) =>
   api.get<ApiResponse<ILeaderboard[]>>('leaderboard/' + (tournament_result_id || ''), { params: { tournament_id } }).then(data => data.data);
@@ -19,8 +19,10 @@ const addLeaderboardsApi = ({ team_id, position, tournament_id }: AddLeaderboard
   api.post<ApiResponse>('leaderboard', { team_id, position, tournament_id }).then(data => data.data)
 
 const removeLeaderboardsApi = ({ tournament_result_id }: RemoveLeaderboard.RequestPayload) => 
-  api.delete<ApiResponse>('leaderboard/' + tournament_result_id,).then(data => data.data)
+  api.delete<ApiResponse>('leaderboard/' + tournament_result_id).then(data => data.data)
 
+const editLeaderboardsApi = (payload: EditLeaderboard.RequestPayload | null) => 
+  api.put<ApiResponse>('leaderboard/' + (payload?.tournament_result_id || ''), { team_id: payload?.team_id, position: payload?.position, tournament_id: payload?.tournament_id }).then(data => data.data)
 
 /*
   Worker Saga: Fired on GET_LEADERBOARD_REQUEST action
@@ -74,6 +76,24 @@ function* removeLeaderboardSaga({ payload }: RemoveLeaderboard.Request): Generat
     );
   }
 }
+
+function* editLeaderboardSaga({ payload }: EditLeaderboard.Request): Generator<
+  | CallEffect<ApiResponse>
+  | PutEffect<EditLeaderboard.Success>
+  | PutEffect<EditLeaderboard.Failure>,
+  void,
+  any
+> {
+  try {
+    yield call(editLeaderboardsApi, payload);
+    console.log('====', payload)
+    yield put(editLeaderboard.success());
+  } catch (e: any) {
+    yield put(editLeaderboard.failure({ message: e.message, selected: payload })
+    );
+  }
+}
+
 /*
   Starts worker saga on latest dispatched `GET_LEADERBOARD_REQUEST` action.
   Allows concurrent increments.
@@ -83,6 +103,7 @@ function* leaderboardSaga() {
     takeLatest(GET_LEADERBOARD.REQUEST, getLeaderboardSaga),
     takeLatest(ADD_LEADERBOARD.REQUEST, submitLeaderboardSaga),
     takeLatest(REMOVE_LEADERBOARD.REQUEST, removeLeaderboardSaga),
+    takeLatest(EDIT_LEADERBOARD.REQUEST, editLeaderboardSaga),
   ]);
 }
 

@@ -2,8 +2,9 @@ import {
   GET_LEADERBOARD,
   ADD_LEADERBOARD,
   REMOVE_LEADERBOARD,
+  EDIT_LEADERBOARD,
 } from 'store/leaderboard/actionTypes';
-import { AddLeaderboard, GetLeaderboard, RemoveLeaderboard } from 'store/leaderboard/types';
+import { AddLeaderboard, EditLeaderboard, GetLeaderboard, RemoveLeaderboard } from 'store/leaderboard/types';
 
 export const getLeaderboard = {
   request: (payload: GetLeaderboard.RequestPayload = {}): GetLeaderboard.Request => ({
@@ -43,7 +44,7 @@ export const removeLeaderboard = {
     type: REMOVE_LEADERBOARD.REQUEST,
     payload: data
   }),
-  setShowModal: (data: number): RemoveLeaderboard.SetSelectedId => ({
+  setConfirmModal: (data: number): RemoveLeaderboard.SetSelectedId => ({
     type: REMOVE_LEADERBOARD.SET_SELECTED_ID,
     payload: data
   }),
@@ -52,6 +53,24 @@ export const removeLeaderboard = {
   }),
   failure: (payload: RemoveLeaderboard.FailurePayload): RemoveLeaderboard.Failure => ({
     type: REMOVE_LEADERBOARD.FAILURE,
+    payload,
+  })
+}
+
+export const editLeaderboard = {
+  request: (data: EditLeaderboard.SetSelectedDataPayload | null): EditLeaderboard.Request => ({
+    type: EDIT_LEADERBOARD.REQUEST,
+    payload: data
+  }),
+  setShowEditModal: (data: EditLeaderboard.SetSelectedDataPayload | null): EditLeaderboard.SetSelectedData => ({
+    type: EDIT_LEADERBOARD.SET_SELECTED_DATA,
+    payload: data
+  }),
+  success: (): EditLeaderboard.Success => ({
+    type: EDIT_LEADERBOARD.SUCCESS
+  }),
+  failure: (payload: EditLeaderboard.FailurePayload): EditLeaderboard.Failure => ({
+    type: EDIT_LEADERBOARD.FAILURE,
     payload,
   })
 }
