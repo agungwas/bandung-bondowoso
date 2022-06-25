@@ -1,4 +1,4 @@
-import { ADD_LEADERBOARD, GET_LEADERBOARD } from 'store/leaderboard/actionTypes'
+import { ADD_LEADERBOARD, GET_LEADERBOARD, REMOVE_LEADERBOARD } from 'store/leaderboard/actionTypes'
 
 interface Database {
   id: number
@@ -49,6 +49,11 @@ export interface LeaderboardState {
     loading: boolean, 
     error: null | string,
     showModal: boolean
+  }
+  remove: {
+    loading: boolean, 
+    error: null | string,
+    selectedId: number
   }
 }
 
@@ -113,6 +118,36 @@ export declare namespace AddLeaderboard {
   }
 }
 
+export declare namespace RemoveLeaderboard {
+  interface FailurePayload {
+    message: string;
+    selectedId: number;
+  }
+
+  interface RequestPayload {
+    tournament_result_id: number;
+  }
+
+  type Success = {
+    type: typeof REMOVE_LEADERBOARD.SUCCESS;
+  }
+
+  type Failure = {
+    type: typeof REMOVE_LEADERBOARD.FAILURE;
+    payload: RemoveLeaderboard.FailurePayload;
+  }
+
+  type Request = {
+    type: typeof REMOVE_LEADERBOARD.REQUEST;
+    payload: RemoveLeaderboard.RequestPayload
+  }
+
+  type SetSelectedId = {
+    type: typeof REMOVE_LEADERBOARD.SET_SELECTED_ID;
+    payload: number
+  }
+}
+
 export type LeaderboardActions = 
   | AddLeaderboard.Failure
   | AddLeaderboard.Success
@@ -121,3 +156,7 @@ export type LeaderboardActions =
   | GetLeaderboard.Failure
   | GetLeaderboard.Success
   | GetLeaderboard.Request
+  | RemoveLeaderboard.Failure
+  | RemoveLeaderboard.Success
+  | RemoveLeaderboard.Request
+  | RemoveLeaderboard.SetSelectedId

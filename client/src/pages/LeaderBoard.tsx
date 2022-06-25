@@ -2,7 +2,7 @@ import Select from 'components/Select'
 import { useEffect, useState } from 'react'
 import { Button, Form, Modal, Spinner } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'hooks'
-import { addLeaderboard, getLeaderboard } from 'store/leaderboard/actions'
+import { addLeaderboard, getLeaderboard, removeLeaderboard } from 'store/leaderboard/actions'
 import { selectors } from 'store/rootSelector'
 import { fetchTeamRequest } from 'store/team/actions'
 import { fetchTournamentRequest } from 'store/tournament/actions'
@@ -13,6 +13,9 @@ const LeaderBoardPage = () => {
   const loadingGetLeaderboard = useSelector(selectors.leaderboard.get.loading)
   const loadingAddLeaderboard = useSelector(selectors.leaderboard.add.loading)
   const showModalAddLeaderboard = useSelector(selectors.leaderboard.add.showModal)
+  const selectedIdRemoveLeaderboard = useSelector(selectors.leaderboard.remove.selectedId)
+  const loadingRemoveLeaderboard = useSelector(selectors.leaderboard.remove.loading)
+  
   const team = useSelector(selectors.team.data)
   const tournamentData = useSelector(selectors.tournament.data)
 
@@ -22,9 +25,12 @@ const LeaderBoardPage = () => {
   const [position, setPosition] = useState<number>(1)
 
   useEffect(() => {
-    if (selectedTourList !== 'default' && !loadingAddLeaderboard) dispatch(getLeaderboard.request({ tournament_id: selectedTourList }))
-    dispatch(fetchTournamentRequest())
-  }, [dispatch, loadingAddLeaderboard, selectedTourList])
+    if (selectedTourList !== 'default' && !loadingAddLeaderboard && !loadingRemoveLeaderboard) {
+      dispatch(getLeaderboard.request({ tournament_id: selectedTourList }))
+    } else if (selectedTourList === 'default') {
+      dispatch(fetchTournamentRequest())
+    }
+  }, [dispatch, loadingAddLeaderboard, loadingRemoveLeaderboard, selectedTourList])
 
   useEffect(() => {
     if (showModalAddLeaderboard) {
@@ -39,7 +45,6 @@ const LeaderBoardPage = () => {
   const addTourResult: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault()
     dispatch(addLeaderboard.request({ position, team_id: +teamOpt || 0, tournament_id: +tournamentOpt || 0 }))
-
   }
 
   const leaderboardTable = () => {
@@ -92,6 +97,10 @@ const LeaderBoardPage = () => {
               </td>
               <td>{el.team?.captain?.name}</td>
               <td>{el.point}</td>
+              <td className="d-flex justify-content-around">
+                <div className="icon-close py-2"><img onClick={_ => dispatch(removeLeaderboard.setShowModal(el.id))} style={{ width: '18px' }} src="https://metaco.gg/icon/ic_close_button.svg" alt="close"/></div>
+                <div className="icon-close py-2"><img style={{ width: '18px' }} src="mono-state-edit.svg" alt="close"/></div>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -163,6 +172,54 @@ const LeaderBoardPage = () => {
               </Form>
             </Modal.Body>
           </Modal>
+
+          <Modal
+            show={!!selectedIdRemoveLeaderboard}
+            size="sm"
+            backdrop={true}
+            onHide={() => dispatch(removeLeaderboard.setShowModal(0))}
+            backdropClassName="modal-backdrop foo-modal-backdrop in"
+            onBackdropClick={() => removeLeaderboard.setShowModal(0)}
+          >
+            <Modal.Body className="bg-dark text-center">
+                {!loadingRemoveLeaderboard && (
+                  <>
+                    <div className="message">
+                      <h5><strong>Are you sure to delete this data?</strong></h5>
+                    </div>
+                    <div>
+                        <div className="d-flex justify-content-around">
+                          <Button 
+                            className="mt-3" 
+                            style={{ fontFamily: 'Gilroy-SemiBold'}}
+                            disabled={!!loadingAddLeaderboard} 
+                            variant="info" 
+                            onClick={_=> dispatch(removeLeaderboard.setShowModal(0))}
+                          >Cancel</Button>
+                          <Button 
+                            className="mt-3" 
+                            variant="danger"
+                            onClick={_=> dispatch(removeLeaderboard.request({ tournament_result_id: selectedIdRemoveLeaderboard }))}
+                          >Delete</Button>
+                        </div>
+                    </div>
+                  </>
+                )}
+                {loadingRemoveLeaderboard && (
+                  <div className="d-flex justify-content-center align-items-center">
+                    <Spinner
+                      as="span"
+                      animation="grow"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                    <div className="p-2" style={{ fontFamily: 'Gilroy-SemiBold'}}>
+                      Deleting...
+                    </div>
+                  </div>
+                )}
+            </Modal.Body>
+          </Modal>
           <div className="content">
             <div className="leaderboards">
               <div className="w-100 d-flex justify-content-between h-25 mb-3">
@@ -171,13 +228,13 @@ const LeaderBoardPage = () => {
                   setVal={(e: any) => setSelectedTourList(+e.target.value)}
                   state={selectedTourList}
                   placeholder="Pilih tournament"
-                  className="w-25 m-0 p-0 tabs__item font-weight-bold btn btn-base btn-block mt-0"
+                  className="col-4 m-0 p-0 tabs__item font-weight-bold btn btn-base btn-block mt-0"
                   style={{ height: '50px' }}
                 />
                 <button 
                   style={{ height: '50px' }} 
                   type="button" 
-                  className={`tabs__item font-weight-bold btn btn-base btn-block mt-3 m-0 w-25 ${showModalAddLeaderboard ? 'active' : ''}`}
+                  className={`col-2 tabs__item font-weight-bold btn btn-base btn-block mt-3 m-0 w-25 ${showModalAddLeaderboard ? 'active' : ''}`}
                   onClick={_ => dispatch(addLeaderboard.setShowModal(true))}
                 >Add Result</button>
               </div>

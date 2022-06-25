@@ -6,6 +6,8 @@ import {
 const defaultConfig: ToastOptions = {
   theme: 'colored',
   position: toast.POSITION.TOP_CENTER,
+  autoClose: 3000,
+  pauseOnHover: true
 };
 
 const success = (message: string) => {

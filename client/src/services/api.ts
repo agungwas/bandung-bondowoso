@@ -24,12 +24,11 @@ export const setupClients = (store: Store) => {
       async function ({ response: error }: { response: ErrorResponse }) {
         const status = error.status;
         const message = error.data.message;
-        // console.log('==== Interceptors Error Response ====', error);
+        console.log('==== Interceptors Error Response ====', error);
 
-        if (status > 399) {
-          Array.isArray(message) 
-            ? message.forEach((el: string) => toastify.error(el))
-            : toastify.error(message) 
+        if (status > 399) { 
+          if (Array.isArray(message)) message.forEach((el: string) => toastify.error(el))
+          else toastify.error(message) 
         }
 
         return Promise.reject(error);

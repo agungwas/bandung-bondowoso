@@ -1,23 +1,32 @@
-@font-face {
-	font-family: Gilroy;
-	src: url(https://metaco.gg/_next/static/media/Gilroy-Bold.ca49f7658c4eaac78b6d4dd77a751c59.ttf) format("truetype");
+.primary {
+  background-color: #4294c8
 }
+
 @font-face {
-	font-family: Gilroy-Thin;
-	src: url(https://metaco.gg/_next/static/media/Gilroy-Thin.28f856b7c4b3d473e0d1e27dc372699d.ttf) format("truetype");
+  font-family: Gilroy;
+  src: url(fonts/Gilroy-Regular.ttf) format("truetype")
 }
+
 @font-face {
-	font-family: Gilroy-Medium;
-	src: url(https://metaco.gg/_next/static/media/Gilroy-Medium.1b4da6582f83f45ea039e1f68037e386.ttf) format("truetype");
+  font-family: Gilroy-Thin;
+  src: url(fonts/Gilroy-Thin.ttf) format("truetype")
 }
+
 @font-face {
-	font-family: Gilroy-SemiBold;
-	src: url(https://metaco.gg/_next/static/media/Gilroy-SemiBold.07b9100a72fe7d46d20a02ae0cae0b77.ttf) format("truetype");
+  font-family: Gilroy-Medium;
+  src: url(fonts/Gilroy-Medium.ttf) format("truetype")
 }
+
 @font-face {
-	font-family: Gilroy-Bold;
-	src: url(https://metaco.gg/_next/static/media/Gilroy-Bold.ca49f7658c4eaac78b6d4dd77a751c59.ttf) format("truetype");
+  font-family: Gilroy-SemiBold;
+  src: url(fonts/Gilroy-SemiBold.ttf) format("truetype")
 }
+
+@font-face {
+  font-family: Gilroy-Bold;
+  src: url(fonts/Gilroy-Bold.ttf) format("truetype")
+}
+
 @-webkit-keyframes loading01 {
 	0% {
 		opacity: 1;
@@ -6911,7 +6920,7 @@ html {
 				border-radius: 15px 0 0 15px;
 				text-align: center;
 			}
-			&:nth-child(4) {
+			&:nth-child(5) {
 				border-radius: 0 15px 15px 0;
 			}
 		}
@@ -6931,6 +6940,10 @@ html {
 					border-bottom: 2px solid #4294c8;
 				}
 				&:nth-child(4) {
+					border-top: 2px solid #4294c8;
+					border-bottom: 2px solid #4294c8;
+				}
+        &:nth-child(5) {
 					border-right: 2px solid #4294c8;
 					border-top: 2px solid #4294c8;
 					border-bottom: 2px solid #4294c8;

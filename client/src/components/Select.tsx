@@ -18,6 +18,7 @@ const Select: React.FC<SelectProps> = ({ options, setVal, state, className, plac
           width: "100%",
           display: "flex",
           justifyContent: "space-between",
+          fontFamily: "Gilroy-Medium",
           ...style
         }}
         value={state}
@@ -30,6 +31,7 @@ const Select: React.FC<SelectProps> = ({ options, setVal, state, className, plac
           selected
           className="dropdown-item active"
           value={'default'}
+          style={{ fontFamily: 'Gilroy-SemiBold'}}
         >{label}</option>
         {options.map((el, index) => (
           <option
@@ -38,7 +40,7 @@ const Select: React.FC<SelectProps> = ({ options, setVal, state, className, plac
             value={el.id}
             role="menuitem"
             className="dropdown-item"
-            style={{ color: 'white' }}
+            style={{ color: 'white', fontFamily: 'Gilroy' }}
           >
             {el.label}
           </option>
