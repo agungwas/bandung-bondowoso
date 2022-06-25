@@ -86,7 +86,7 @@ function* editLeaderboardSaga({ payload }: EditLeaderboard.Request): Generator<
 > {
   try {
     yield call(editLeaderboardsApi, payload);
-    console.log('====', payload)
+
     yield put(editLeaderboard.success());
   } catch (e: any) {
     yield put(editLeaderboard.failure({ message: e.message, selected: payload })

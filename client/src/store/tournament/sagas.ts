@@ -28,14 +28,12 @@ function* fetchTournamentSaga(): Generator<
 > {
   try {
     const response = yield call(getTournaments);
-    console.log(response, 'ini response')
     yield put(
       fetchTournamentSuccess({
         tournaments: response.data,
       })
     );
   } catch (e: any) {
-    console.log(e, 'ini error tournament')
     yield put(
       fetchTournamentFailure({
         error: e.message,

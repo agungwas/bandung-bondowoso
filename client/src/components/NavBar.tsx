@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 
 const NavBar = () => {
-  const [showSearch, setShowSearch] = useState<boolean>(true)
+  const [showSearch, setShowSearch] = useState<boolean>(false)
   const [search, setSearch] = useState<string>('')
   const componentRef = useRef<HTMLDivElement>(null);
 

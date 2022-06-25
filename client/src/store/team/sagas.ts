@@ -8,47 +8,44 @@ import {
 } from 'redux-saga/effects';
 import { ApiResponse, api } from 'services/api';
 
-import { fetchTeamFailure, fetchTeamSuccess } from 'store/team/actions';
-import { FETCH_TEAM_REQUEST } from 'store/team/actionTypes';
-import { FetchTeamFailure, FetchTeamSuccess, ITeam } from 'store/team/actionTypes';
+import { getTeam } from 'store/team/actions';
+import { GET_TEAM } from 'store/team/actionTypes';
+import { GetTeam, ITeam } from 'store/team/types';
 
-const getTeams = () =>
-  api.get<ApiResponse<ITeam[]>>('team', {}).then(data => data.data);
+const getTeamApi = ({ tournament_id, pagination }: GetTeam.RequestPayload) => {
+  const params: GetTeam.PaginationPayload & GetTeam.RequestPayload = {}
+  if (pagination?.limit) params.limit = pagination.limit
+  if (pagination?.page) params.page = pagination.page
+  if (pagination?.search) params.search = pagination.search
+  if (tournament_id) params.tournament_id = tournament_id
+  return api.get<ApiResponse<ITeam[]>>('team', { params }).then(data => data.data);
+}
 
 
 /*
-  Worker Saga: Fired on FETCH_TEAM_REQUEST action
+  Worker Saga: Fired on GET_TEAM.REQUEST action
 */
-function* fetchTeamSaga(): Generator<
+function* getTeamSaga({ payload }: GetTeam.Request): Generator<
   | CallEffect<ApiResponse<ITeam[]>>
-  | PutEffect<FetchTeamSuccess>
-  | PutEffect<FetchTeamFailure>,
+  | PutEffect<GetTeam.Success>
+  | PutEffect<GetTeam.Failure>,
   void,
   any
 > {
   try {
-    const response = yield call(getTeams);
-    yield put(
-      fetchTeamSuccess({
-        teams: response.data,
-      })
-    );
+    const response = yield call(getTeamApi, payload);
+    yield put(getTeam.success({ teams: response.data, pagination: response.pagination }));
   } catch (e: any) {
-    console.log(e, 'ini error team')
-    yield put(
-      fetchTeamFailure({
-        error: e.message,
-      })
-    );
+    yield put(getTeam.failure({ error: e.message }));
   }
 }
 
 /*
-  Starts worker saga on latest dispatched `FETCH_TEAM_REQUEST` action.
+  Starts worker saga on latest dispatched `GET_TEAM.REQUEST` action.
   Allows concurrent increments.
 */
 function* teamSaga() {
-  yield all([takeLatest(FETCH_TEAM_REQUEST, fetchTeamSaga)]);
+  yield all([takeLatest(GET_TEAM.REQUEST, getTeamSaga)]);
 }
 
 export default teamSaga;

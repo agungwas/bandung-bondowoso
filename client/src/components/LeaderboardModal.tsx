@@ -2,7 +2,7 @@ import { useDispatch } from 'hooks'
 import { Button, Form, Modal, Spinner } from 'react-bootstrap'
 import Select from 'components/Select'
 import { LeaderboardActions } from 'store/leaderboard/types';
-import { ITeam, TeamActions } from 'store/team/actionTypes';
+import { ITeam, TeamActions } from 'store/team/types';
 import { ITournament, TournamentActions } from 'store/tournament/actionTypes';
 
 
@@ -64,6 +64,7 @@ const LeaderboardModal: React.FC<ModalProps> = ({
               state={tournamentOpt}
             />
             <Select
+              disabled={tournamentOpt === 'default'}
               options={teamData.map(el => ({ id: el.id, label: el.name }))}
               setVal={(e: any) => setTeamOpt(+e.target.value)}
               state={teamOpt}

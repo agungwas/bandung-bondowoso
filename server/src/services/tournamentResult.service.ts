@@ -39,8 +39,9 @@ export class TournamentResultService {
     const tournamentData = await this.tournamentModel.findOne({ where: { id: tourResDto.tournament_id }})
     if (!tournamentData) throw { statusCode: 404, message: 'Selected tournament is not exist' }
     
-    const data = await this.teamModel.findOne({ where: { id: tourResDto.team_id }, relations: ['members', 'members.user']})
+    const data = await this.teamModel.findOne({ where: { id: tourResDto.team_id }, relations: ['members', 'members.user', 'tournament']})
     if (!data) throw { statusCode: 404, message: 'Team is not exist' }
+    if (data.tournament_id !== tourResDto.tournament_id) throw { statusCode: 400, message: 'Team not registered in this tournament'}
     const coin = this.positionToCoin(tourResDto.position)
 
     if (coin) {
@@ -57,6 +58,7 @@ export class TournamentResultService {
     const data = await this.tournamentResultModel.findOne({ where: { id }, relations: ['team', 'team.members', 'team.members.user']});
     if (!data) throw { statusCode: 404, message: 'Data not found' }
     if (!data.team) throw { statusCode: 404, message: 'Selected team is not exist' }
+    if (data.team.tournament_id !== tourResDto.tournament_id) throw { statusCode: 400, message: 'Team not registered in this tournament'}
     
     const tournamentData = await this.tournamentModel.findOne({ where: { id: tourResDto.tournament_id }})
     if (!tournamentData) throw { statusCode: 404, message: 'Selected tournament is not exist' }

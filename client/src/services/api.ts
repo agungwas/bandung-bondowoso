@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import {Store} from "@reduxjs/toolkit";
 import toastify from 'helpers/toastify';
-console.log(process.env.REACT_APP_API_BASE_URL + '/api', 'ini dari sini')
+import { GetTeam } from 'store/team/types';
 
 export const api = axios.create({ baseURL: process.env.REACT_APP_API_BASE_URL + '/api' });
 
@@ -47,6 +47,7 @@ export interface ApiResponse<T = undefined> {
   statusCode: number
   message: string
   data: T
+  pagination?: GetTeam.PaginationPayload
 }
 
 export interface ErrorResponse<T = undefined> extends AxiosResponse<ApiResponse<T>> {

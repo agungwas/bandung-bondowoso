@@ -2,6 +2,7 @@ import { ITeam } from '@/interfaces/teams.interface';
 import { Entity, PrimaryGeneratedColumn, Column, DeleteDateColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { Users } from '@models/users.model';
 import { TeamMembers } from './teamMembers.model';
+import { Tournaments } from './tournaments.model';
 
 class ModelRelations {
   @ManyToOne(() => Users)
@@ -10,6 +11,10 @@ class ModelRelations {
 
   @OneToMany(() => TeamMembers, teamMember => teamMember.team)
   members: TeamMembers[]
+
+  @ManyToOne(() => Tournaments)
+  @JoinColumn({ name: 'tournament_id' })
+  tournament: TeamMembers
 }
 
 @Entity()

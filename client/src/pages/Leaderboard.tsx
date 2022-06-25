@@ -4,7 +4,7 @@ import { Button, Modal, Spinner } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'hooks'
 import { addLeaderboard, editLeaderboard, getLeaderboard, removeLeaderboard } from 'store/leaderboard/actions'
 import { selectors } from 'store/rootSelector'
-import { fetchTeamRequest } from 'store/team/actions'
+import { getTeam } from 'store/team/actions'
 import { fetchTournamentRequest } from 'store/tournament/actions'
 import LeaderboardModal from 'components/LeaderboardModal'
 
@@ -40,10 +40,18 @@ const LeaderBoardPage = () => {
       setTournamentOpt('default')
       setTeamOpt('default')
       setPosition(1)
-      dispatch(fetchTeamRequest())
       dispatch(fetchTournamentRequest())
     }
   }, [showModalAddLeaderboard, selectedEditLeaderboard, dispatch])
+
+  useEffect(() => {
+    if (tournamentOpt !== 'default') {
+      dispatch(getTeam.request({ tournament_id: tournamentOpt }))
+    }
+    if (selectedEditLeaderboard?.tournament_id) {
+      dispatch(getTeam.request({ tournament_id: selectedEditLeaderboard.tournament_id }))
+    }
+  }, [dispatch, tournamentOpt, selectedEditLeaderboard?.tournament_id])
 
   const leaderboardTable = () => {
     if (loadingGetLeaderboard) return (
@@ -216,7 +224,7 @@ const LeaderBoardPage = () => {
                   setVal={(e: any) => setSelectedTourList(+e.target.value)}
                   state={selectedTourList}
                   placeholder="Pilih tournament"
-                  className="col-4 m-0 p-0 tabs__item font-weight-bold btn btn-base btn-block mt-0"
+                  className="col-4 p-0 tabs__item font-weight-bold btn btn-base btn-block"
                   style={{ height: '50px' }}
                 />
                 <button 

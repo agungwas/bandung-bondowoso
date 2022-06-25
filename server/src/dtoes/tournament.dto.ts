@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNumber, IsOptional, Min } from "class-validator";
 
 export class CreateTournamentDto {
@@ -21,7 +21,7 @@ export class CreateTournamentDto {
 export class GetTournamentDto {
   @IsOptional()
   @IsNumber()
-  @ApiProperty()
+  @ApiPropertyOptional()
   id?: number
 }
 

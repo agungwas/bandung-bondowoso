@@ -187,6 +187,7 @@ export declare namespace EditLeaderboard {
     payload: EditLeaderboard.SetSelectedDataPayload | null
   }
 }
+
 export type LeaderboardActions = 
   | AddLeaderboard.Failure
   | AddLeaderboard.Success

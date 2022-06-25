@@ -1,18 +1,21 @@
 type SelectProps = {
   options: { id: number, label: string }[]
   state: number | 'default'
-  setVal: any
+  setVal: React.ChangeEventHandler<HTMLSelectElement>
   className?: string
   placeholder?: string
   style?: React.CSSProperties
+  disableFirstOption?: boolean
+  disabled?: boolean
 }
 
 
-const Select: React.FC<SelectProps> = ({ options, setVal, state, className, placeholder, style }) => {
+const Select: React.FC<SelectProps> = ({ options, setVal, state, className, placeholder, style, disableFirstOption, disabled }) => {
   const label = placeholder ? placeholder : `Tampilkan: ${options.length} Data`
   return (
-    <div className={"dropdown show mt-3 " + className}>
+    <div className={"dropdown show " + className + (disableFirstOption ? '' : ' mt-3')}>
       <select
+        disabled={disabled}
         className="text-input-search dropdown-toggle btn btn-secondary "
         style={{
           width: "100%",
@@ -24,15 +27,16 @@ const Select: React.FC<SelectProps> = ({ options, setVal, state, className, plac
         value={state}
         onChange={setVal}
       >
-        <option
-          tabIndex={0}
-          role="menuitem"
-          disabled
-          selected
-          className="dropdown-item active"
-          value={'default'}
-          style={{ fontFamily: 'Gilroy-SemiBold'}}
-        >{label}</option>
+        {!disableFirstOption && (
+          <option
+            tabIndex={0}
+            role="menuitem"
+            disabled
+            className="dropdown-item active"
+            value={'default'}
+            style={{ fontFamily: 'Gilroy-SemiBold'}}
+          >{label}</option>
+        )}
         {options.map((el, index) => (
           <option
             tabIndex={0}
