@@ -20,16 +20,16 @@ const Footer = () => {
 
           <div className="_align-center col-3 col-md-3 col-lg-3">
             <div className="footer-sosmed">
-              <div className="footer-sosmed-circle">
+              <div className="footer-sosmed-circle" onClick={_ => window.open('https://www.youtube.com/channel/UCXjdI6BVoMzRr1spqTtAlkA', '_blank', 'noopener,noreferrer')}>
                 <img src="https://metaco.gg/icon/ic_youtube.svg" alt="youtube" />
               </div>
-              <div className="footer-sosmed-circle">
+              <div className="footer-sosmed-circle" onClick={_ => window.open('https://www.instagram.com/metaco_gg', '_blank', 'noopener,noreferrer')}>
                 <img src="https://metaco.gg/icon/ic_instagram.svg" alt="instagram" />
               </div>
-              <div className="footer-sosmed-circle">
+              <div className="footer-sosmed-circle" onClick={_ => window.open('https://web.facebook.com/MetacoGG', '_blank', 'noopener,noreferrer')}>
                 <img src="https://metaco.gg/icon/ic_facebook.svg" alt="facebook" />
               </div>
-              <div className="footer-sosmed-circle">
+              <div className="footer-sosmed-circle" onClick={_ => window.open('https://twitter.com/metaco_gg', '_blank', 'noopener,noreferrer')}>
                 <img src="https://metaco.gg/icon/ic_twitter.svg" alt="twitter" />
               </div>
             </div>

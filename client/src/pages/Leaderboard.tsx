@@ -1,5 +1,5 @@
 import Select from 'components/Select'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Modal, Spinner } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'hooks'
 import { addLeaderboard, editLeaderboard, getLeaderboard, removeLeaderboard } from 'store/leaderboard/actions'
@@ -107,7 +107,7 @@ const LeaderBoardPage = () => {
   }
 
   return (
-    <div className="content-layout">
+    <React.Fragment>
       <div className="leaderboard-layout">
           <div className="header">
             <div className="background"><img src="https://metaco.gg/images/leaderboard-banner.png" alt="banner" /></div>
@@ -238,7 +238,7 @@ const LeaderBoardPage = () => {
           </h1>
         </div>
       </div>
-    </div>
+    </React.Fragment>
   )
 } 
 
