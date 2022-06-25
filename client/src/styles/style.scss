@@ -8652,6 +8652,8 @@ html {
 	font-style: normal;
 	text-align: center;
 	color: #fff;
+	overflow: hidden;
+	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 1;
 	font-family: Montserrat,sans-serif;

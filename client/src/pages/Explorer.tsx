@@ -1,27 +1,39 @@
 import Select from 'components/Select'
 import { useDispatch, useSelector } from 'hooks'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { selectors } from 'store/rootSelector'
 import { getTeam } from 'store/team/actions'
+import { getUser } from 'store/user/actions'
 
 const Explorer = () => {
   const dispatch = useDispatch()
   const [tab, setTab] = useState<'Team' | 'Player'>('Team')
   const dataGetTeam = useSelector(selectors.team.data)
   const paginationGetTeam = useSelector(selectors.team.pagination)
+  const dataGetUser = useSelector(selectors.user.data)
+  const paginationGetUser = useSelector(selectors.user.pagination)
+
+  const pagination = () => tab === 'Team' ? paginationGetTeam : paginationGetUser
+  const data: any = () => tab === 'Team' ? dataGetTeam : dataGetUser
+  const action = () => tab === 'Team' ? getTeam : getUser
 
   const setLimit: React.ChangeEventHandler<HTMLSelectElement> = e => {
-    dispatch(getTeam.request({ pagination: { ...paginationGetTeam, limit: +e.target.value, page: 1 }}))
+    dispatch(action().request({ pagination: { ...pagination(), limit: +e.target.value, page: 1 }})) 
   }
 
   const clearPagination = () => {
-    dispatch(getTeam.setPagination({ search: '' }))
-    dispatch(getTeam.request({ pagination: { limit: 12 }}))
+    dispatch(action().setPagination({ search: '' }))
+    dispatch(action().request({ pagination: { limit: 12 }}))
   }
 
   useEffect(() => {
-    dispatch(getTeam.request({ pagination: { limit: paginationGetTeam?.limit || 12 }}))
+    dispatch(action().setPagination({ search: '' }))
+    dispatch(action().request({ pagination: { limit: 12 }}))
+  }, [tab])
+
+  useEffect(() => {
+    dispatch(getTeam.request({ pagination: { limit: pagination()?.limit || 12 }}))
 
     return () => {
       dispatch(getTeam.failure({ error: '' }))
@@ -29,7 +41,7 @@ const Explorer = () => {
   }, [dispatch])
 
   const toPage = (page: number) => {
-    dispatch(getTeam.request({ pagination: { ...paginationGetTeam, page }}))
+    dispatch(action().request({ pagination: { ...pagination(), page }}))
   }
 
 
@@ -58,12 +70,12 @@ const Explorer = () => {
                     placeholder="Search"
                     defaultValue=""
                     className="text-input-search form-control"
-                    value={paginationGetTeam?.search}
-                    onChange={e => dispatch(getTeam.setPagination({ search: e.target.value }))}
-                    onKeyDownCapture={e => e.key === 'Enter' && dispatch(getTeam.request({ pagination: paginationGetTeam }))}
+                    value={pagination()?.search}
+                    onChange={e => dispatch(action().setPagination({ search: e.target.value }))}
+                    onKeyDownCapture={e => e.key === 'Enter' && dispatch(action().request({ pagination: pagination() }))}
                   />
                   <div className="input-group-append">
-                    <span className="text-input-search input-group-text" onClick={_=> dispatch(getTeam.request({ pagination: paginationGetTeam }))}>
+                    <span className="text-input-search input-group-text" onClick={_=> dispatch(getTeam.request({ pagination: pagination() }))}>
                       <img src="https://metaco.gg/icon/ui/search.png" alt="search icon" />
                     </span>
                   </div>
@@ -73,7 +85,7 @@ const Explorer = () => {
             <div className="col-md-3">
               <Select
                 options={[{ id: 6, label: 'Tampilkan: 6 Data' }, { id: 12, label: 'Tampilkan: 12 Data' }, { id: 18, label: 'Tampilkan: 18 Data' }]}
-                state={paginationGetTeam?.limit || 0}
+                state={pagination()?.limit || 0}
                 setVal={setLimit}
                 disableFirstOption
                 className="form-group mt-0"
@@ -111,20 +123,24 @@ const Explorer = () => {
         </div>
       </div>
       <div className="explorer__content container">
-        <div className="content__count">Hasil : {paginationGetTeam?.totalData} Tim</div>
+        <div className="content__count">Hasil : {pagination()?.totalData} {tab === 'Team' ? 'Tim' : 'Player'}</div>
         <div className="content__row row">
-          {dataGetTeam.map((el, index) => (
-            <div className="content__column col-6 col-md-3 col-lg-2">
+          {data().map((el: any, index: number) => (
+            <div className="content__column col-6 col-md-3 col-lg-2" key={index}>
               <div className="card-explorer">
                 <img
-                  src={el.logo}
+                  src={tab === 'Team' ? el.logo : (el.picture ? el.picture : 'https://metaco.gg/images/default-image-reward-thumb.svg')}
                   alt={"logo " + el.name}
                   className="card-explorer__image"
                 />
                 <span className="card-explorer__name">{el.name}</span>
-                <span className="card-explorer__game">{el.tournament_name}</span>
-                <span className="card-explorer__points">{el.point || 0} points</span>
-                <a className="card-explorer__button" target="_blank" rel="noreferrer" href={"https://metaco.gg/team/" + el.name.toLowerCase().split(' ').join('-')}>
+                {tab === 'Team' && (
+                  <React.Fragment>
+                    <span className="card-explorer__game">{el.tournament_name}</span>
+                    <span className="card-explorer__points">{el.point || 0} points</span>
+                  </React.Fragment>
+                )}
+                <a className="card-explorer__button" target="_blank" rel="noreferrer" href={`https://metaco.gg/${tab === 'Team' ? 'team' : 'profile'}/` + el.name.toLowerCase().split(' ').join('-')}>
                   Lihat Profile
                 </a>
               </div>
@@ -140,19 +156,19 @@ const Explorer = () => {
               style={{ display: "flex", justifyContent: "center", flex: 1 }}
               className="pagination"
             >
-              <li className={"page-item " + (paginationGetTeam?.page === 1 && 'disabled')}>
-                <button className="page-link" aria-label="Previous" onClick={_=> toPage(paginationGetTeam?.page as number - 1)}>
+              <li className={"page-item " + (pagination()?.page === 1 && 'disabled')}>
+                <button className="page-link" aria-label="Previous" onClick={_=> toPage(pagination()?.page as number - 1)}>
                   <span aria-hidden="true">‹</span>
                   <span className="sr-only">Previous</span>
                 </button>
               </li>
-              {paginationGetTeam?.totalPage && Array.from({length: paginationGetTeam.totalPage}, (x, i) => i).map(el => (
-                <li className={"page-item " + (paginationGetTeam.page === el + 1 && 'active')} onClick={_ => toPage(el + 1)}>
+              {pagination()?.totalPage && Array.from({ length: pagination()?.totalPage as number}, (x, i) => i).map(el => (
+                <li className={"page-item " + (pagination()?.page === el + 1 && 'active')} onClick={_ => toPage(el + 1)}>
                   <button className="page-link">{el + 1}</button>
                 </li>
               ))}
-              <li className={"page-item " + (paginationGetTeam?.totalPage === paginationGetTeam?.page && 'disabled')}>
-                <button className="page-link" aria-label="Next" onClick={_=> toPage(paginationGetTeam?.page as number + 1)}>
+              <li className={"page-item " + (pagination()?.totalPage === pagination()?.page && 'disabled')}>
+                <button className="page-link" aria-label="Next" onClick={_=> toPage(pagination()?.page as number + 1)}>
                   <span aria-hidden="true">›</span>
                   <span className="sr-only">Next</span>
                 </button>

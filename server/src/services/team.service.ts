@@ -25,7 +25,11 @@ export class TeamService {
 
     if (tournament_id) query.where('t.tournament_id = :tournament_id', { tournament_id })
     if (search) query.andWhere('t.name LIKE :search', { search: `%${search}%` })
-    if (limit || page) query.limit(limit || 12).offset((limit || 12) * (page - 1 || 0))
+    if (limit || page) {
+      limit = limit || 12
+      page = page || 1
+      query.limit(limit).offset(limit * (page - 1))
+    }
 
     const data = await query.getRawMany()
     const totalData = await query.getCount()

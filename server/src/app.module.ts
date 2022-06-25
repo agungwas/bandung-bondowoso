@@ -6,6 +6,7 @@ import { join } from 'path';
 import { TeamModule } from 'modules/team.module';
 import { TournamentResultModule } from 'modules/tournamentResult.module';
 import { TournamentModule } from './modules/tournament.module';
+import { UserModule } from './modules/user.module';
 
 
 @Module({
@@ -24,7 +25,8 @@ import { TournamentModule } from './modules/tournament.module';
     }),
     TournamentResultModule,
     TeamModule,
-    TournamentModule
+    TournamentModule,
+    UserModule
   ]
 })
 export class AppModule {}

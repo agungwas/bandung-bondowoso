@@ -1,23 +1,8 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional } from 'class-validator';
+import { GetUserQueryDto } from 'dtoes/user.dto';
 
-
-export class GetTeamQueryDto {
-  @IsOptional()
-  @IsNumber()
-  @ApiPropertyOptional()
-  page?: number;
-
-  @IsOptional()
-  @IsNumber()
-  @ApiPropertyOptional()
-  limit?: number;
-
-  @IsOptional()
-  @IsString()
-  @ApiPropertyOptional()
-  search?: string;
-
+export class GetTeamQueryDto extends GetUserQueryDto {
   @IsOptional()
   @IsNumber()
   @ApiPropertyOptional()

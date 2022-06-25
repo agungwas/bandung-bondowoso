@@ -34,6 +34,7 @@ function* getTeamSaga({ payload }: GetTeam.Request): Generator<
 > {
   try {
     const response = yield call(getTeamApi, payload);
+
     yield put(getTeam.success({ teams: response.data, pagination: response.pagination }));
   } catch (e: any) {
     yield put(getTeam.failure({ error: e.message }));
